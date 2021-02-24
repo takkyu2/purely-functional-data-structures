@@ -1,5 +1,6 @@
 #ifndef IMLIST_CLASS
 #define IMLIST_CLASS
+
 #include <string>
 #include <memory>
 #include <ranges>
@@ -88,7 +89,6 @@ public:
         Iterator& operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
         
         friend bool operator== (const Iterator& a, const Iterator& b) { return a.m_ptr == b.m_ptr; }
-        friend bool operator!= (const Iterator& a, const Iterator& b) { return a.m_ptr != b.m_ptr; }
     private:
         std::shared_ptr<Node> m_ptr;
     };
@@ -102,17 +102,5 @@ public:
     const Iterator cbegin() const noexcept { return begin(); }
     const Iterator cend() const noexcept { return end(); }
 };
-
-/* template <std::semiregular T> */
-/* class ImList_view : public std::ranges::view_interface<ImList_view<T>> { */
-/* public: */
-/*     ImList_view() = default; */
-/*     ImList_view(const ImList<T>& xs) : */
-/*         m_begin(xs.begin()), m_end(xs.end()) { } */
-/*     auto begin() const { return m_begin; } */
-/*     auto end() const { return m_end; } */
-/* private: */
-/*     typename ImList<T>::Iterator m_begin, m_end; */
-/* }; */
 
 #endif

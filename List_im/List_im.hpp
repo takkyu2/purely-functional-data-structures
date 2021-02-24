@@ -92,15 +92,10 @@ public:
     private:
         std::shared_ptr<Node> m_ptr;
     };
-    Iterator begin() noexcept { return Iterator(m_head); }
-    Iterator end() noexcept { return Iterator(nullptr); }
-    Iterator cbegin() noexcept { return begin(); }
-    Iterator cend() noexcept { return end(); }
-
-    const Iterator begin() const noexcept { return Iterator(m_head); }
-    const Iterator end() const noexcept { return Iterator(nullptr); }
-    const Iterator cbegin() const noexcept { return begin(); }
-    const Iterator cend() const noexcept { return end(); }
+    Iterator begin() const noexcept { return Iterator(m_head); }
+    Iterator end() const noexcept { return Iterator(nullptr); }
+    Iterator cbegin() const noexcept { return begin(); }
+    Iterator cend() const noexcept { return end(); }
 };
 
 #endif

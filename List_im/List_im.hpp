@@ -3,14 +3,16 @@
 #include <string>
 #include <memory>
 #include <ranges>
+#include <iterator>
 
 template <typename T>
 class ImList {
 public:
-    ImList() { }
+    ImList() = default;
+    ImList(const ImList& rhs) : m_head(rhs.m_head) { }
     ImList(std::initializer_list<T> il) {
         auto newone = ImList();
-        for (auto elem : il | std::views::reverse)
+        for (auto&& elem : il | std::views::reverse)
             newone = newone.cons(elem);
         this->m_head = newone.m_head;
     }
@@ -40,6 +42,7 @@ public:
 private:
     // Internal Node structure
     struct Node {
+        Node() = default;
         Node(T val): value(val) { }
         Node(T val, std::shared_ptr<Node> next): value(val), tail(next) { }
         // Avoid recursion
@@ -68,6 +71,48 @@ private:
         else
             return m_head;
     }
+public:
+    class Iterator {
+    public:
+        using difference_type = std::ptrdiff_t;
+        using iterator_concept = std::forward_iterator_tag;
+        using value_type = const T;
+        using pointer = const T*;
+        using reference = const T&;
+
+        Iterator() = default;
+        Iterator(std::shared_ptr<Node> ite_): m_ptr(ite_) { }
+        reference operator*() const { return m_ptr->value; }
+        pointer operator->() const { return &(m_ptr->value); }
+        Iterator& operator++() { m_ptr = m_ptr->tail; return *this; }
+        Iterator& operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
+        
+        friend bool operator== (const Iterator& a, const Iterator& b) { return a.m_ptr == b.m_ptr; }
+        friend bool operator!= (const Iterator& a, const Iterator& b) { return a.m_ptr != b.m_ptr; }
+    private:
+        std::shared_ptr<Node> m_ptr;
+    };
+    Iterator begin() noexcept { return Iterator(m_head); }
+    Iterator end() noexcept { return Iterator(nullptr); }
+    Iterator cbegin() noexcept { return begin(); }
+    Iterator cend() noexcept { return end(); }
+
+    const Iterator begin() const noexcept { return Iterator(m_head); }
+    const Iterator end() const noexcept { return Iterator(nullptr); }
+    const Iterator cbegin() const noexcept { return begin(); }
+    const Iterator cend() const noexcept { return end(); }
 };
+
+/* template <std::semiregular T> */
+/* class ImList_view : public std::ranges::view_interface<ImList_view<T>> { */
+/* public: */
+/*     ImList_view() = default; */
+/*     ImList_view(const ImList<T>& xs) : */
+/*         m_begin(xs.begin()), m_end(xs.end()) { } */
+/*     auto begin() const { return m_begin; } */
+/*     auto end() const { return m_end; } */
+/* private: */
+/*     typename ImList<T>::Iterator m_begin, m_end; */
+/* }; */
 
 #endif

@@ -17,7 +17,7 @@ public:
             newone = newone.cons(elem);
         this->m_head = newone.m_head;
     }
-    ImList empty() const { return ImList(); }
+    static ImList empty() { return ImList(); }
     bool isEmpty() const { return m_head == nullptr; }
     ImList cons(T newval) const {
         if (isEmpty()) {

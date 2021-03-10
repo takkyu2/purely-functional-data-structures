@@ -83,20 +83,6 @@ public:
         else
             return member_memoized_helper(x, std::get<SubTree>(m_tree).elem);
     }
-    bool member_memoized_helper(Elem x, Elem memo) const {
-        static auto visit_member = overloaded {
-            [](Empty e, Elem x, Elem memo) {
-                return x == memo;
-            },
-            [](SubTree t, Elem x, Elem memo) {
-                if (x < t.elem)
-                    return t.left->member_memoized_helper(x, memo);
-                else
-                    return t.right->member_memoized_helper(x, t.elem);
-            },
-        };
-        return std::visit(std::bind(visit_member, _1, x, memo), m_tree);
-    }
     BinarySearchTree insert_err(Elem x) const {
         static auto visit_insert = overloaded{
             [] (Empty e, Elem x) {
@@ -120,9 +106,7 @@ public:
     }
     void print() const {
         static auto visit_print = overloaded {
-            [](Empty e) {
-                return;
-            },
+            [](Empty e) { },
             [](SubTree t) {
                 std::cout << t.elem << "(";
                 t.left->print();
@@ -133,8 +117,70 @@ public:
         };
         std::visit(visit_print, m_tree);
     }
+    Elem getElem(Elem x) const {
+        if (std::holds_alternative<Empty>(m_tree))
+            throw std::runtime_error("element not found, empty");
+        else
+            return getElem_helper(x, std::get<SubTree>(m_tree).elem);
+    }
 private:
+    bool member_memoized_helper(Elem x, Elem memo) const {
+        static auto visit_member = overloaded {
+            [](Empty e, Elem x, Elem memo) {
+                return x == memo;
+            },
+            [](SubTree t, Elem x, Elem memo) {
+                if (x < t.elem)
+                    return t.left->member_memoized_helper(x, memo);
+                else
+                    return t.right->member_memoized_helper(x, t.elem);
+            },
+        };
+        return std::visit(std::bind(visit_member, _1, x, memo), m_tree);
+    }
+    Elem getElem_helper(Elem x, Elem memo) const {
+        static auto visit_member = overloaded {
+            [](Empty e, Elem x, Elem memo) {
+                if (x == memo)
+                    return memo;
+                else
+                    throw std::runtime_error("element not found");
+            },
+            [](SubTree t, Elem x, Elem memo) {
+                if (x < t.elem)
+                    return t.left->getElem_helper(x, memo);
+                else
+                    return t.right->getElem_helper(x, t.elem);
+            },
+        };
+        return std::visit(std::bind(visit_member, _1, x, memo), m_tree);
+    }
     std::variant<Empty, SubTree> m_tree;
+};
+
+template <Ordered Key, typename Val>
+class FiniteMap {
+private:
+    class kv_pair {
+    public:
+        kv_pair(Key k, Val v) : key(k), val(v) { }
+        Key key;
+        Val val;
+        bool operator<(const kv_pair& rhs) const { return key < rhs.key; }
+        bool operator==(const kv_pair& rhs) const { return key == rhs.key; }
+        bool operator<=(const kv_pair& rhs) const { return key <= rhs.key; }
+    };
+    BinarySearchTree<kv_pair> m_bst;
+public:
+    FiniteMap() = default;
+    FiniteMap(BinarySearchTree<kv_pair> b) : m_bst(b) { }
+    FiniteMap empty() { return {}; }
+    FiniteMap bind(Key k, Val v) {
+        return m_bst.insert_err({k, v});
+    }
+    Val lookup(Key k) {
+        return m_bst.getElem({k, Val{}}).val;
+    }
 };
 
 
@@ -157,4 +203,7 @@ int main() {
     std::cout << bst2.member(3) << std::endl;
     std::cout << bst2.member(1) << std::endl;
     std::cout << bst2.member(5) << std::endl;
+    FiniteMap<int, int> fm;
+    fm = fm.bind(1,3);
+    std::cout << fm.lookup(1) << std::endl;
 }

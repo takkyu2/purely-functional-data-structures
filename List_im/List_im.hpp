@@ -26,6 +26,13 @@ public:
             return ImList(std::make_shared<Node>(Node(newval, this->first())));
         }
     }
+    friend ImList cons(T newval, ImList lis) {
+        if (lis.isEmpty()) {
+            return ImList(std::make_shared<Node>(Node(newval)));
+        } else {
+            return ImList(std::make_shared<Node>(Node(newval, lis.first())));
+        }
+    }
     // return head, raise error if empty
     T head() const { return this->first_if("head")->value; }
     // return new ImList, raise error if empty
@@ -39,6 +46,13 @@ public:
             return tail().cons(val);
         else
             return this->tail().update(i-1, val).cons(this->head());
+    }
+    ImList rev() const {
+        ImList lis = ImList::empty();
+        for (auto elem: *this) {
+            lis = lis.cons(elem);
+        }
+        return lis;
     }
 private:
     // Internal Node structure

@@ -3,23 +3,10 @@
 #include <variant>
 #include <memory>
 #include <functional>
+#include <ranges>
+#include "../utils/utils.hpp"
 
 using namespace std::placeholders;
-struct Empty {};
-
-template <typename T>
-concept Ordered = requires(T a, T b) {
-    {a < b} -> std::convertible_to<bool>;
-    {a == b} -> std::convertible_to<bool>;
-    {a <= b} -> std::convertible_to<bool>;
-};
-
-// use inheritance to overload operator()
-template <typename... Ts>
-struct overloaded : Ts... { using Ts::operator()...; };
-
-// type deduction guide
-template <typename... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 
 template <Ordered Elem>
 class BinarySearchTree {
@@ -206,4 +193,9 @@ int main() {
     FiniteMap<int, int> fm;
     fm = fm.bind(1,3);
     std::cout << fm.lookup(1) << std::endl;
+    BinarySearchTree<int> bsst;
+    for (auto elem: std::views::iota(1,20)) {
+        bsst = bsst.insert_err(elem);
+    }
+    bsst.print(); std::cout << std::endl;
 }

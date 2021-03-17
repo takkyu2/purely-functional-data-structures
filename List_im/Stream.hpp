@@ -1,3 +1,5 @@
+#ifndef STREAM_HPP
+#define STERAM_HPP
 #include <string>
 #include <memory>
 #include <ranges>
@@ -81,13 +83,13 @@ public:
         if (n == 0) return *this;
         return (*m_lazycell)().tail().drop(n-1);
     }
-    Stream reverse() {
+    Stream reverse() const {
         return reverse_helper({});
     }
-    Stream rev() {
+    Stream rev() const {
         return reverse();
     }
-    Stream reverse_helper(Stream r) {
+    Stream reverse_helper(Stream r) const {
         if (isEmpty()) return r;
         return (*m_lazycell)().tail().reverse_helper(
                 Stream(make_lazy_val([head=(*m_lazycell)().head(), cell=r]() {
@@ -95,11 +97,11 @@ public:
             }))
         );
     }
-    Stream sort() {
+    Stream sort() const {
         if (isEmpty()) return {};
         return (*m_lazycell)().tail().sort().insert((*m_lazycell)().head());
     }
-    Stream insert(Elem x) {
+    Stream insert(Elem x) const {
         if (isEmpty()) return Stream(make_lazy_val([x=x](){ return StreamCell<Elem>(x);}));
         return Stream(make_lazy_val([x=x,this_stm = *this]() {
                 auto v = (*(this_stm.m_lazycell))().head(); 
@@ -110,41 +112,4 @@ public:
     }
 };
 
-
-int main() {
-    Stream<int> st, st2;
-    for (int i = 0; i < 10; ++i) {
-        st = cons(i, st);
-    }
-    for (int i = 10; i < 200; ++i) {
-        st2 = cons(200-i, st2);
-    }
-    Stream<int> st3 = st + st2;
-    Stream<int> st4 = st3.drop(3);
-    Stream<int> st5 = st3.reverse();
-
-    Stream<int> st2v = st3.sort();
-
-    std::cout << std::endl;
-    for (int i = 0; i < 20; ++i) {
-        std::cout << st3.head() << std::endl;
-        st3 = st3.tail();
-    }
-    std::cout << std::endl;
-    for (int i = 0; i < 100; ++i) {
-        std::cout << st2v.head() << std::endl;
-        st2v = st2v.tail();
-    }
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
-    for (int i = 0; i < 3; ++i) {
-        std::cout << st4.head() << std::endl;
-        st4 = st4.tail();
-    }
-    std::cout << std::endl;
-    for (int i = 0; i < 3; ++i) {
-        std::cout << st5.head() << std::endl;
-        st5 = st5.tail();
-    }
-}
+#endif

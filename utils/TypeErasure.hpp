@@ -1,7 +1,7 @@
 #ifndef TYPE_ERASURE_DEF
 #define TYPE_ERASURE_DEF
 #include <memory>
-#include <mutex>
+#include <functional>
 
 /* template <typename R, typename... Args> */
 /* class FunctorBridge { */
@@ -90,22 +90,50 @@
 /*     bridge = std::make_shared<FunctorBridge<R, Args...>>(std::forward<F>(f)); */
 /* } */
 
-/* template <typename T> */
-/* class lazy_val { */
-/* private: */
-/*     FunctionPtr<T()> m_computation; */
-/*     mutable T m_cache; */
-/*     mutable std::once_flag m_value_flag; */
-/* public: */
-/*     lazy_val(FunctionPtr<T()> f) : m_computation(f) { } */
-/*     const T& operator()() const { */
-/*         std::call_once(m_value_flag, [this] { */
-/*                 m_cache = m_computation(); */
-/*         }); */
-/*         return m_cache; */
-/*     } */
-/* }; */
+/* extern std::mutex m_value_lock; */
 
+template <typename F>
+class lazy_val {
+private:
+    F m_computation;
+    mutable std::optional<decltype(m_computation())> m_value;
+    /* mutable std::shared_mutex m_value_lock; */
+public:
+    /* lazy_val() = default; */
+    lazy_val(const F& f) : m_computation(f) { }
+    /* lazy_val(lazy_val &&other) : m_computation(std::move(other.m_computation)) { } */
+    /* lazy_val(lazy_val &&other) : m_computation(std::move(other.m_computation)) { } */
+    /* lazy_val(const F& f) : m_computation(f) { } */
+
+    const decltype(m_computation())& operator()() const {
+        /* std::lock_guard<std::shared_mutex> lock(m_value_lock); */
+        if (!m_value) {
+            m_value = std::invoke(m_computation);
+        }
+
+        return *m_value;
+    }
+};
+
+template <typename F>
+inline lazy_val<F> make_lazy_val(F&& computation) {
+    return lazy_val<F>(std::forward<F>(computation));
+}
+
+// Instead of the make_lazy_val_helper function, we can define the `lazy`
+// keyword with a bit of macro trickery - the macro will call the operator
+// minus and create the lambda head - we can only provide the lambda
+// body when creating the lazy value
+
+/* struct _make_lazy_val_helper { */
+/*     template <typename F> */
+/*     auto operator - (F &&function) const */
+/*     { */
+/*         return lazy_val<F>(function); */
+/*     } */
+/* } make_lazy_val_helper; */
+
+/* #define lazy make_lazy_val_helper - [=] */
 
 template<typename R, typename... Args>
 class FunctorBridge

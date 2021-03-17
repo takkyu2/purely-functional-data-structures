@@ -5,17 +5,27 @@
 #include <functional>
 #include <ranges>
 #include <queue>
+#include "../List_im/List_im.hpp"
 #include "../utils/utils.hpp"
 
 using namespace std::placeholders;
 
 template <Ordered Elem>
+class RBTree;
+
+template <Ordered Elem>
+RBTree<Elem> FromOrdList(ImList<Elem>, int);
+
+template <Ordered Elem>
+RBTree<Elem> FromOrdList_helper(ImList<Elem>&, int, int);
+
+template <Ordered Elem>
 class RBTree {
-private:
+public:
     class Red {};
     class Black {};
     using Color = std::variant<Red, Black>;
-
+private:
     class Left {};
     class Right {};
     class Neither {};
@@ -43,6 +53,10 @@ public:
     RBTree(Color c, Elem x, std::shared_ptr<RBTree> l, std::shared_ptr<RBTree> r)
         : m_tree(SubTree(c, x, l, r)) { }
     static RBTree empty() { return {};}
+
+    friend RBTree<Elem> FromOrdList_helper<Elem>(ImList<Elem>& head, int sz, int depth);
+    friend RBTree<Elem> FromOrdList<Elem>(ImList<Elem> head, int sz);
+
     bool member(Elem x) const {
         if (std::holds_alternative<Empty>(m_tree))
             return false;
@@ -304,6 +318,36 @@ public:
     }
 };
 
+template <Ordered Elem>
+RBTree<Elem> FromOrdList_helper(ImList<Elem>& head, int sz, int depth) {
+    using Red = typename RBTree<Elem>::Red;
+    using Black = typename RBTree<Elem>::Black;
+    using Color = typename RBTree<Elem>::Color;
+
+    if (sz <= 0) return RBTree<Elem>();
+    RBTree<Elem> left = FromOrdList_helper(head, sz/2, depth-1);
+
+    Elem rootelem = head.head();
+    Color c = depth == 0 ? Color(Red {}) : Color(Black {});
+    head = head.tail();
+
+    RBTree<Elem> right = FromOrdList_helper(head, sz - 1 - sz/2, depth-1);
+
+    return RBTree<Elem>(c, rootelem, std::make_shared<RBTree<Elem>>(left), std::make_shared<RBTree<Elem>>(right));
+}
+template <Ordered Elem>
+RBTree<Elem> FromOrdList(ImList<Elem> head) {
+    int sz = head.size();
+    if (sz == 0) 
+        return RBTree<Elem>();
+    int depth = 0, twopow = 1;
+    while (twopow - 1 <= sz) {
+        depth++;
+        twopow *= 2;
+    }
+    depth--;
+    return FromOrdList_helper(head, sz, depth);
+}
 
 int main() {
     RBTree<int> bst {};
@@ -315,12 +359,20 @@ int main() {
     bst = bst.insert(1);
     bst.print_bfs(); std::cout << std::endl;
     RBTree<int> bst2;
-    for (auto elem : std::views::iota(1,200)) {
+    for (int elem = 0; elem < 300; ++elem) {
         bst2 = bst2.insert(elem);
     }
     bst2.print_bfs(); std::cout << std::endl;
     bst2.print(); std::cout << std::endl;
     std::cout << bst2.member(122) << std::endl;
     std::cout << bst2.member(200) << std::endl;
+
+
+    ImList<int> lis;
+    for (int i = 80; i >= 0; --i) {
+        lis = lis.cons(i);
+    }
+    auto ttt = FromOrdList(lis);
+    ttt.print_bfs();
 }
 

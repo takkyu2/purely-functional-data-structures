@@ -54,6 +54,10 @@ public:
         }
         return lis;
     }
+    int size() const {
+        if (isEmpty()) return 0;
+        return 1 + tail().size();
+    }
 private:
     // Internal Node structure
     struct Node {

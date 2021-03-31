@@ -5,7 +5,7 @@
 #include <functional>
 #include <ranges>
 #include <queue>
-#include "../List_im/List_im.hpp"
+#include "../List/List.hpp"
 #include "../utils/utils.hpp"
 
 using namespace std::placeholders;
@@ -38,8 +38,6 @@ public:
 private:
     struct SubTree {
         SubTree(Elem x) : elem(x) { }
-        /* SubTree(Color c, Elem x, std::shared_ptr<RBTree> l, std::shared_ptr<RBTree> r) */ 
-        /*     : color(c), elem(x), left(l), right(r) { } */
         SubTree(Color c, std::pair<Elem,bool> x, std::shared_ptr<RBTree> l, std::shared_ptr<RBTree> r) 
             : color(c), elem(x.first), left(l), right(r), val_tag(x.second) { }
         Color color;
@@ -60,8 +58,6 @@ public:
                     std::make_shared<RBTree>(RBTree::empty())
                 )
                 ) { }
-    /* RBTree(Color c, Elem x, std::shared_ptr<RBTree> l, std::shared_ptr<RBTree> r) */
-    /*     : m_tree(SubTree(c, x, l, r)) { } */
     RBTree(Color c, std::pair<Elem,bool> x, std::shared_ptr<RBTree> l, std::shared_ptr<RBTree> r)
         : m_tree(SubTree(c, x, l, r)) { }
     static RBTree empty() { return {};}
@@ -427,7 +423,6 @@ public:
     }
     SizeAwareRBTree del_elem(Elem x) const {
         try {
-            m_rbtree.print_bfs();
             return rebuild(m_rbtree.delete_helper(x), total_nodes, valid_nodes - 1);
         } catch (std::runtime_error e) {
             std::cout << "delete avoided!" << std::endl;
@@ -440,8 +435,6 @@ private:
         if (total_nodes > th_num && total_nodes >= 2*valid_nodes) {
             ImList<Elem> lis;
             tr.ToOrdList(lis);
-            std::cerr << "rebuild!\n";
-            FromOrdList(lis).print_bfs();
             return {FromOrdList(lis), valid_nodes, valid_nodes};
         } else {
             return {tr, total_nodes, valid_nodes};
@@ -495,7 +488,6 @@ int main() {
     bst.print_bfs();
 
     for (int i = 10; i < 20; ++i) {
-        std::cerr << i << std::endl;
         bst = bst.del_elem(i);
     }
     bst.print_bfs();

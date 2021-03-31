@@ -22,6 +22,7 @@ public:
     explicit StreamCell(Elem v) : m_cell(v) {}
     Elem head() const { return m_cell.value().m_val; }
     Stream<Elem> tail() const { return m_cell.value().m_tail; }
+    bool isEmpty() const { return !m_cell; }
 private:
     struct Cell {
         Cell(Elem v) : m_val(v) { }
@@ -46,7 +47,7 @@ public:
         m_lazycell = std::move(stm.m_lazycell);
         return *this;
     }
-    StreamCell<Elem> force() {
+    StreamCell<Elem> force() const {
         return (*m_lazycell)();
     }
     static Stream empty() {
@@ -54,7 +55,7 @@ public:
     }
     bool isEmpty() const {
         if (!m_lazycell) return true;
-        return !force();
+        return force().isEmpty();
     }
     Elem head() const {
         return force().head();
@@ -64,7 +65,7 @@ public:
     }
     Stream operator+(Stream rhs) const {
         return Stream(make_lazy_val([this_strm=*this, rhs_strm=rhs]() {
-                if (this_strm.isEmpty()) return rhs_strm;
+                if (this_strm.isEmpty()) return rhs_strm.force();
                 return StreamCell<Elem>(this_strm.head(), this_strm.tail() + rhs_strm);
         }));
     }
@@ -79,16 +80,16 @@ public:
                 return StreamCell<Elem>(elem, t);
         }));
     }
-    Stream cons(Elem e) {
+    Stream cons(Elem e) const {
         return cons(e, *this);
     }
     Stream drop(int n) const {
         return Stream(make_lazy_val([this_strm=*this, n=n]() {
-                return this_strm.drop_helper(n);
+                return this_strm.drop_helper(n).force();
         }));
     }
-    Stream drop_helper(int n) {
-        if (isEmpty()) return StreamCell<Elem>();
+    Stream drop_helper(int n) const {
+        if (isEmpty()) return Stream();
         if (n == 0) return *this;
         return tail().drop(n-1);
     }
@@ -97,7 +98,7 @@ public:
     }
     Stream reverse() const {
         return Stream(make_lazy_val([this_strm=*this]() {
-                    this_strm.reverse_helper({});
+                    return this_strm.reverse_helper({}).force();
         }));
     }
     Stream reverse_helper(Stream r) const {
@@ -111,16 +112,16 @@ public:
     Stream sort() const {
         return Stream(make_lazy_val([this_strm = *this]() {
                 if (this_strm.isEmpty()) return StreamCell<Elem>();
-                return this_strm.tail().sort().insert(this_strm.head());
+                return this_strm.tail().sort().insert(this_strm.head()).force();
         }));
     }
 private:
     Stream insert(Elem x) const { // For insertion sort on stream
-        return Stream(make_lazy_val([x=x,this_strm = *this]() {
-                if (this_strm.isEmpty()) return Stream(make_lazy_val([x=x](){ return StreawmCell<Elem>(x);}));
+        return Stream(make_lazy_val([x=x, this_strm=*this]() {
+                if (this_strm.isEmpty()) return StreamCell<Elem>(x);
                 auto v = this_strm.head(); 
                 auto t = this_strm.tail(); 
-                if (x < v) return StreamCell<Elem>(x,this_strm); 
+                if (x < v) return StreamCell<Elem>(x, this_strm); 
                 else return StreamCell<Elem>(v, t.insert(x));
         }));
     }

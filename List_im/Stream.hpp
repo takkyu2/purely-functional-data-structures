@@ -46,28 +46,32 @@ public:
         m_lazycell = std::move(stm.m_lazycell);
         return *this;
     }
+    StreamCell<Elem> force() {
+        return (*m_lazycell)();
+    }
     static Stream empty() {
         return Stream();
     }
     bool isEmpty() const {
-        return !m_lazycell;
+        if (!m_lazycell) return true;
+        return !force();
     }
     Elem head() const {
-        return (*m_lazycell)().head();
+        return force().head();
     }
     Stream tail() const {
-        return (*m_lazycell)().tail();
+        return force().tail();
     }
     Stream operator+(Stream rhs) const {
-        if (isEmpty()) return rhs;
-        return Stream(make_lazy_val([this_cell=this->m_lazycell, rhs_cell=rhs]() {
-                return StreamCell<Elem>(this_cell->operator()().head(), this_cell->operator()().tail() + rhs_cell);
+        return Stream(make_lazy_val([this_strm=*this, rhs_strm=rhs]() {
+                if (this_strm.isEmpty()) return rhs_strm;
+                return StreamCell<Elem>(this_strm.head(), this_strm.tail() + rhs_strm);
         }));
     }
     Stream take(int n) const {
-        if (n == 0 || isEmpty()) return {};
-        return Stream(make_lazy_val([cell=this->m_lazycell, n=n]() {
-                return StreamCell<Elem>(cell->operator()().head(), cell->operator()().tail().take(n-1));
+        return Stream(make_lazy_val([this_strm=*this, n=n]() {
+                if (n == 0 || this_strm.isEmpty()) return StreamCell<Elem>();
+                return StreamCell<Elem>(this_strm.head(), this_strm.tail().take(n-1));
         }));
     }
     friend Stream cons(Elem e, const Stream& st) {
@@ -79,36 +83,46 @@ public:
         return cons(e, *this);
     }
     Stream drop(int n) const {
-        if (isEmpty()) return {};
-        if (n == 0) return *this;
-        return (*m_lazycell)().tail().drop(n-1);
+        return Stream(make_lazy_val([this_strm=*this, n=n]() {
+                return this_strm.drop_helper(n);
+        }));
     }
-    Stream reverse() const {
-        return reverse_helper({});
+    Stream drop_helper(int n) {
+        if (isEmpty()) return StreamCell<Elem>();
+        if (n == 0) return *this;
+        return tail().drop(n-1);
     }
     Stream rev() const {
         return reverse();
     }
+    Stream reverse() const {
+        return Stream(make_lazy_val([this_strm=*this]() {
+                    this_strm.reverse_helper({});
+        }));
+    }
     Stream reverse_helper(Stream r) const {
         if (isEmpty()) return r;
-        return (*m_lazycell)().tail().reverse_helper(
-                Stream(make_lazy_val([head=(*m_lazycell)().head(), cell=r]() {
-                    return StreamCell<Elem>(head, cell);
+        return tail().reverse_helper(
+                Stream(make_lazy_val([head=head(), r=r]() {
+                    return StreamCell<Elem>(head, r);
             }))
         );
     }
     Stream sort() const {
-        if (isEmpty()) return {};
-        return (*m_lazycell)().tail().sort().insert((*m_lazycell)().head());
+        return Stream(make_lazy_val([this_strm = *this]() {
+                if (this_strm.isEmpty()) return StreamCell<Elem>();
+                return this_strm.tail().sort().insert(this_strm.head());
+        }));
     }
-    Stream insert(Elem x) const {
-        if (isEmpty()) return Stream(make_lazy_val([x=x](){ return StreamCell<Elem>(x);}));
-        return Stream(make_lazy_val([x=x,this_stm = *this]() {
-                auto v = (*(this_stm.m_lazycell))().head(); 
-                auto t = (*(this_stm.m_lazycell))().tail(); 
-                if (x < v) return StreamCell<Elem>(x,this_stm); 
+private:
+    Stream insert(Elem x) const { // For insertion sort on stream
+        return Stream(make_lazy_val([x=x,this_strm = *this]() {
+                if (this_strm.isEmpty()) return Stream(make_lazy_val([x=x](){ return StreawmCell<Elem>(x);}));
+                auto v = this_strm.head(); 
+                auto t = this_strm.tail(); 
+                if (x < v) return StreamCell<Elem>(x,this_strm); 
                 else return StreamCell<Elem>(v, t.insert(x));
-            }));
+        }));
     }
 };
 

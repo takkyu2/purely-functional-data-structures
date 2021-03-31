@@ -47,9 +47,6 @@ public:
         m_lazycell = std::move(stm.m_lazycell);
         return *this;
     }
-    StreamCell<Elem> force() const {
-        return (*m_lazycell)();
-    }
     static Stream empty() {
         return Stream();
     }
@@ -88,11 +85,6 @@ public:
                 return this_strm.drop_helper(n).force();
         });
     }
-    Stream drop_helper(int n) const {
-        if (isEmpty()) return Stream();
-        if (n == 0) return *this;
-        return tail().drop(n-1);
-    }
     Stream rev() const {
         return reverse();
     }
@@ -101,14 +93,6 @@ public:
                     return this_strm.reverse_helper({}).force();
         });
     }
-    Stream reverse_helper(Stream r) const {
-        if (isEmpty()) return r;
-        return tail().reverse_helper(
-                make_thunk([head=head(), r=r]() {
-                    return StreamCell<Elem>(head, r);
-                })
-        );
-    }
     Stream sort() const {
         return make_thunk([this_strm = *this]() {
                 if (this_strm.isEmpty()) return StreamCell<Elem>();
@@ -116,6 +100,9 @@ public:
         });
     }
 private:
+    StreamCell<Elem> force() const {
+        return (*m_lazycell)();
+    }
     Stream insert(Elem x) const { // For insertion sort on stream
         return make_thunk([x=x, this_strm=*this]() {
                 if (this_strm.isEmpty()) return StreamCell<Elem>(x);
@@ -124,6 +111,19 @@ private:
                 if (x < v) return StreamCell<Elem>(x, this_strm); 
                 else return StreamCell<Elem>(v, t.insert(x));
         });
+    }
+    Stream drop_helper(int n) const {
+        if (isEmpty()) return Stream();
+        if (n == 0) return *this;
+        return tail().drop(n-1);
+    }
+    Stream reverse_helper(Stream r) const {
+        if (isEmpty()) return r;
+        return tail().reverse_helper(
+                make_thunk([head=head(), r=r]() {
+                    return StreamCell<Elem>(head, r);
+                })
+        );
     }
     template <typename F>
     static Stream make_thunk(F&& lam) {

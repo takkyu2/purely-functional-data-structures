@@ -123,19 +123,8 @@ int main() {
     Heap<int> hp;
     hp = hp.insert(3).insert(4).insert(8);
     auto hp2 = hp.insert(10).insert(-100);
-    /* hp.print(); */
     std::cout << hp2.findMin() << std::endl;
     std::cout << hp2.findMin_direct() << std::endl;
     hp2 = hp2.deleteMin();
     hp2.print();
-    /* hp2.print(); std::cout << std::endl; */
-    /* hp3.print(); std::cout << std::endl; */
-    /* std::cout << hp2.findMin() << std::endl; */
-    /* hp2 = hp2.deleteMin(); */
-    /* hp2 = hp2.deleteMin(); */
-    /* hp3 = hp3.merge(hp2); */
-    /* Heap<int> hp4 = Heap<int>::Heapify({1,2,3,4}); */
-    /* Heap<int> hp5 = Heap<int>::Heapify({5,6}); */
-    /* auto hpi = merge_iterative(hp2,hp3); */
-    /* hpi.print(); std::cout << std::endl; */
 }

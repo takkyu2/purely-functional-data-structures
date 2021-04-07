@@ -34,7 +34,6 @@ public:
     Heap insert(Elem piv) const {
         auto [small, big] = partition(piv);
         return Tree(piv, std::make_shared<Heap>(small), std::make_shared<Heap>(big));
-        /* return Tree(piv, std::make_shared<Heap>(smaller(piv)), std::make_shared<Heap>(bigger(piv))); */
     }
     Heap smaller(Elem piv) const {
         static const auto visit_smaller = overloaded {
@@ -226,20 +225,5 @@ int main() {
     for (auto elem: v) {
         std::cout << elem << std::endl;
     }
-    /* hp.print(); */
-    /* std::cout << hp2.findMin() << std::endl; */
-    /* std::cout << hp2.findMin_direct() << std::endl; */
-    /* hp2 = hp2.deleteMin(); */
-    /* hp2.print(); */
-    /* hp2.print(); std::cout << std::endl; */
-    /* hp3.print(); std::cout << std::endl; */
-    /* std::cout << hp2.findMin() << std::endl; */
-    /* hp2 = hp2.deleteMin(); */
-    /* hp2 = hp2.deleteMin(); */
-    /* hp3 = hp3.merge(hp2); */
-    /* Heap<int> hp4 = Heap<int>::Heapify({1,2,3,4}); */
-    /* Heap<int> hp5 = Heap<int>::Heapify({5,6}); */
-    /* auto hpi = merge_iterative(hp2,hp3); */
-    /* hpi.print(); std::cout << std::endl; */
 }
 

@@ -180,12 +180,6 @@ public:
         };
         std::visit(visit_print, m_heap);
     }
-    /* Elem getElem(Elem x) const { */
-    /*     if (std::holds_alternative<Empty>(m_heap)) */
-    /*         throw std::runtime_error("element not found, empty"); */
-    /*     else */
-    /*         return getElem_helper(x, std::get<SubHeap>(m_heap).elem); */
-    /* } */
 private:
     bool isEmpty() {
         return std::holds_alternative<Empty>(m_heap);
@@ -218,13 +212,6 @@ int main() {
     auto hp3 = hp.insert(4).insert(6);
     hp2.print(); std::cout << std::endl;
     hp3.print(); std::cout << std::endl;
-    /* std::cout << hp2.findMin() << std::endl; */
-    /* hp2 = hp2.deleteMin(); */
-    /* hp2 = hp2.deleteMin(); */
-    /* hp3 = hp3.merge(hp2); */
-    /* Heap<int> hp4 = Heap<int>::Heapify({1,2,3,4}); */
-    /* Heap<int> hp5 = Heap<int>::Heapify({5,6}); */
     auto hpi = merge_iterative(hp2,hp3);
     hpi.print(); std::cout << std::endl;
-    /* std::cout << hp2.findMin() << std::endl; */
 }

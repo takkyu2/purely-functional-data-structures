@@ -39,13 +39,17 @@ private:
         return force().head();
     }
     Heap tail() const {
-        return Heap(make_lazy_val([m_heap=m_heap](){ return (*m_heap)().tail();}));
+        return make_thunk([this_heap=*this](){ return this_heap.tail();});
     }
     friend Heap cons(Tree t, Heap h) {
-        return Heap(make_lazy_val([t,h]() { return cons(t, h.force());}));
+        return make_thunk([t,h]() { return cons(t, h.force());});
     }
     ImList<Tree> force() const {
         return (*m_heap)();
+    }
+    template <typename F>
+    static Heap make_thunk(F&& lam) {
+        return Heap(make_lazy_val(std::forward<F>(lam)));
     }
 public:
     Heap() {
@@ -66,9 +70,9 @@ public:
             return insTree(link(t, t_min), ts.tail());
     }
     Heap insert(Elem x) {
-        return Heap(make_lazy_val([m_heap=m_heap, x](){return insTree({0, x, {}}, (*m_heap)());}));
+        return make_thunk([this_heap=*this, x](){return insTree({0, x, {}}, this_heap.force());});
     }
-    friend Heap merge(Heap h1, Heap h2) {
+    friend Heap merge(Heap h1, Heap h2) { // like adding two numbers
         if (h1.isEmpty())
             return h2;
         if (h2.isEmpty())
@@ -81,7 +85,7 @@ public:
         else if (head2.getrank() < head1.getrank()) 
             return cons(head2, merge(h1, tail2));
         else
-            return Heap(make_lazy_val([head1,head2,tail1,tail2](){return insTree(link(head1, head2), merge(tail1, tail2).force());}));
+            return make_thunk([head1,head2,tail1,tail2](){return insTree(link(head1, head2), merge(tail1, tail2).force());});
     }
     std::pair<Tree, Heap> removeMinTree() {
         if (tail().isEmpty())
@@ -110,7 +114,7 @@ public:
     }
     Heap deleteMin() {
         auto [t, ts] = removeMinTree();
-        return merge(Heap(make_lazy_val([t=t](){return t.children.rev();})), ts);
+        return merge(make_thunk([t=t](){return t.children.rev();}), ts);
     }
     void print() {
         for (auto t: force()) {

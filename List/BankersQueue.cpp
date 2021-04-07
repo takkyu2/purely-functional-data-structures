@@ -22,10 +22,10 @@ public:
         else 
             return Queue(front.tail(), rear, fr_sz-1, re_sz).check();
     }
-    friend Queue snoc(Elem elem, Queue que) {
+    friend Queue snoc(const Elem elem, const Queue que) {
         return Queue(que.front, cons(elem, que.rear), que.fr_sz, que.re_sz+1).check();
     }
-    Queue snoc(Elem elem) {
+    Queue snoc(Elem elem) const {
         return snoc(elem, *this);
     }
 private:

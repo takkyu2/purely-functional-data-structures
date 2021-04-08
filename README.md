@@ -20,7 +20,7 @@ Yet another implementation of the immutable data structures in Okasaki's textboo
 
 ### Chapter 5
 * Queue
-* [Deque](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/Queue.hpp)
+* [Deque](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/Deque.hpp)
 * [Splay Heap](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Heap/SplayHeap.hpp)
 * [Pairing Heap](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Heap/PairingHeap.hpp)
 

@@ -22,7 +22,9 @@ public:
     explicit StreamCell(Elem v) : m_cell(v) {}
     Elem head() const { return m_cell.value().m_val; }
     Stream<Elem> tail() const { return m_cell.value().m_tail; }
-    bool isEmpty() const { return !m_cell; }
+    bool isEmpty() const {
+        return !m_cell; 
+    }
 private:
     struct Cell {
         Cell(Elem v) : m_val(v) { }
@@ -72,13 +74,16 @@ public:
                 return StreamCell<Elem>(this_strm.head(), this_strm.tail().take(n-1));
         });
     }
-    friend Stream cons(Elem e, const Stream& st) {
-        return make_thunk([elem=e, t=st]() {
+    friend Stream cons(Elem e, const Stream st) {
+        return st.cons(e);
+    }
+    Stream cons(Elem e) const { 
+        // 1. define member function
+        // 2. call member function from friend function
+        // otherwise, nasty function override may happen inside the friend function
+        return make_thunk([elem=e, t=*this]() {
                 return StreamCell<Elem>(elem, t);
         });
-    }
-    Stream cons(Elem e) const {
-        return cons(e, *this);
     }
     Stream drop(int n) const {
         return make_thunk([this_strm=*this, n=n]() {

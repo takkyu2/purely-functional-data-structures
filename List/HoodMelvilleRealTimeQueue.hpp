@@ -112,7 +112,7 @@ private:
 public:
     // Strange error: If we use HoodMelvilleRealTimeQueue() = default here, the run-time behavior seems undefined.
     // I am not sure why (Maybe a bug of variant?).
-    // Update: I found why: built-in types are not default initialized, so that fr_sz and re_sz are not 0. Silly me...
+    // Update: I found why: built-in types are not default initialized, so that fr_sz and re_sz are not 0, w/o =0 in the member declaration. Silly me...
     HoodMelvilleRealTimeQueue() = default;
     /* HoodMelvilleRealTimeQueue() : fr_sz(0), re_sz(0), front(), rear(), state() {} */
     HoodMelvilleRealTimeQueue(int fr_sz, int re_sz, ImList<Elem> front, ImList<Elem> rear, RotationState state)

@@ -33,23 +33,27 @@ public:
     BottomUpMergeSort() {
         *this = empty();
     }
-    BottomUpMergeSort(int sz, suspll mglist): sz(sz), mglist(mglist) {}
+    BottomUpMergeSort(int sz, suspll mglist): sz(sz), mglist(std::make_shared<suspll>(mglist)) {}
     static BottomUpMergeSort empty() {
-        return {0, [](){return ImList<ImList<Elem>>::empty();}};
+        return {0, make_thunk([](){return ImList<ImList<Elem>>::empty();})};
     }
     BottomUpMergeSort add(Elem x) const {
-        return BottomUpMergeSort(sz+1, [this_ms=*this, x](){
+        return BottomUpMergeSort(sz+1, make_thunk([this_ms=*this, x](){
             return addSeg(cons(x, ImList<Elem>::empty()), this_ms.force(), this_ms.sz);
-        });
+        }));
     }
     ImList<Elem> sort() const {
         return mrgAll(ImList<Elem>::empty(), force());
     }
 private:
     ImList<ImList<Elem>> force() const {
-        return mglist();
+        return (*mglist)();
+    }
+    template <typename F> 
+    static suspll make_thunk(F&& lam) {
+        return make_lazy_val(std::forward<F>(lam));
     }
     int sz;
-    suspll mglist;
+    std::shared_ptr<suspll> mglist;
 };
 

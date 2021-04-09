@@ -86,7 +86,7 @@ public:
     }
     friend Stream<Digit> mrgWithList(const ImList<Tree> lis,const Stream<Digit> ds) {
         if (lis.isEmpty()) return ds;
-        else if (ds.isEmpty()) return listToStream(map(+[](Tree t) {return Digit(t);}, lis));
+        else if (ds.isEmpty()) return listToStream(map(+[](Tree t) {return Digit(t);}, lis)); //unary + for converting lambda into function pointer
         else if (ds.head().isZero()) return cons(lis.head(), mrgWithList(lis.tail(), ds.tail()));
         else return cons(Digit(), insTree(link(lis.head(), ds.head().getOne()), mrgWithList(lis.tail(), ds.tail())));
     }

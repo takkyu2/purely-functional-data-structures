@@ -64,7 +64,8 @@ public:
     }
     Stream operator+(Stream rhs) const {
         return make_thunk([this_strm=*this, rhs_strm=rhs]() {
-                if (this_strm.isEmpty()) return rhs_strm.force();
+                if (this_strm.isEmpty() && rhs_strm.isEmpty()) return StreamCell<Elem>();
+                else if (this_strm.isEmpty()) return rhs_strm.force();
                 return StreamCell<Elem>(this_strm.head(), this_strm.tail() + rhs_strm);
         });
     }
@@ -104,6 +105,10 @@ public:
                 return this_strm.tail().sort().insert(this_strm.head()).force();
         });
     }
+    template <typename F>
+    static Stream make_thunk(F&& lam) {
+        return Stream(make_lazy_val(std::forward<F>(lam)));
+    }
 private:
     StreamCell<Elem> force() const {
         return (*m_lazycell)();
@@ -129,10 +134,6 @@ private:
                     return StreamCell<Elem>(head, r);
                 })
         );
-    }
-    template <typename F>
-    static Stream make_thunk(F&& lam) {
-        return Stream(make_lazy_val(std::forward<F>(lam)));
     }
 };
 

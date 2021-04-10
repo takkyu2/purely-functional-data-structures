@@ -57,3 +57,8 @@ Yet another implementation of the immutable data structures in Okasaki's "Purely
 * Implicit Queue
 * Simple Catenable Deque
 * Implicit Catenable Deque
+
+## References
+type erasure: [C++ Templates - The Complete Guide](http://www.tmplbook.com/)
+
+lazy evaluation: [Functional Programming in C++](https://www.manning.com/books/functional-programming-in-c-plus-plus) 

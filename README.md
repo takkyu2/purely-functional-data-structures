@@ -1,5 +1,5 @@
 # Immutable-Data-Structures
-Yet another implementation of the immutable data structures in Okasaki's "Purely Functional Data Structures" in C++.
+Yet another implementation of the immutable data structures in Okasaki's textbook, "Purely Functional Data Structures", in C++.
 
 ## List of data structures
 

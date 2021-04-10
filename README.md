@@ -19,8 +19,8 @@ Yet another implementation of the immutable data structures in Okasaki's textboo
 * [Stream (with O(n*k) insertion sort)](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/Stream.hpp)
 
 ### Chapter 5
-* [Queue](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/Queue.hpp)
-* Deque
+* Queue
+* [Deque](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/Queue.hpp)
 * [Splay Heap](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Heap/SplayHeap.hpp)
 * [Pairing Heap](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Heap/PairingHeap.hpp)
 

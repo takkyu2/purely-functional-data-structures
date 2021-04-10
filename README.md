@@ -40,7 +40,7 @@ Yet another implementation of the immutable data structures in Okasaki's "Purely
 * Hood Melville Queue
 * Bankers Deque
 
-### Chapeter 9
+### Chapter 9
 * Binary Random Access List
 * Skew Binary Random Access List
 * Skew Binomial Heap

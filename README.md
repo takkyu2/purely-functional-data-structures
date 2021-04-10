@@ -28,7 +28,7 @@ Yet another implementation of the immutable data structures in Okasaki's textboo
 * [Bankers Queue](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/BankersQueue.hpp)
 * [Lazy Binomial Heap](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Heap/LazyBinomialHeap.hpp)
 * [Physicists Queue](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/PhysicistsQueue.hpp)
-* Bottom Up Merge sort
+* [Bottom Up Merge sort](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/BottomUpMergeSort.hpp)
 * Lazy Pairing Heap
 
 ### Chapter 7

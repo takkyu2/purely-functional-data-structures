@@ -33,8 +33,8 @@ Yet another implementation of the immutable data structures in Okasaki's textboo
 
 ### Chapter 7
 * [Real Time Queue](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/RealTimeQueue.hpp)
-* Scheduled Binomial Heap
-* Scheduled Bottom Up Merge Sort
+* [Scheduled Binomial Heap](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Heap/ScheduledBinomialHeap.hpp)
+* [Scheduled Bottom Up Merge Sort](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/ScheduledBottomUpMergeSort.hpp)
 
 ### Chapter 8
 * Hood Melville Queue

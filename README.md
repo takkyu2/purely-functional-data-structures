@@ -37,8 +37,9 @@ Yet another implementation of the immutable data structures in Okasaki's textboo
 * [Scheduled Bottom Up Merge Sort](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/ScheduledBottomUpMergeSort.hpp)
 
 ### Chapter 8
-* Hood Melville Queue
-* Bankers Deque
+* [Hood Melville Queue](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/HoodMelvilleRealTimeQueue.hpp)
+* [Bankers Deque](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/BankersDeque.hpp)
+* [Real Time Deque](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/RealTimeDeque.hpp)
 
 ### Chapter 9
 * Binary Random Access List

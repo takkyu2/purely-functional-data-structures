@@ -29,7 +29,7 @@ Yet another implementation of the immutable data structures in Okasaki's textboo
 * [Lazy Binomial Heap](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Heap/LazyBinomialHeap.hpp)
 * [Physicists Queue](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/PhysicistsQueue.hpp)
 * [Bottom Up Merge sort](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/BottomUpMergeSort.hpp)
-* Lazy Pairing Heap
+* [Lazy Pairing Heap](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Heap/LazyPairingHeap.hpp)
 
 ### Chapter 7
 * Real Time Queue

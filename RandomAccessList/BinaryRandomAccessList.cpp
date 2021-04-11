@@ -4,9 +4,12 @@
 int main() {
     BinaryRandomAccessList<int> vec;
     for (int i = 0; i < 100; ++i) {
-        vec = vec.cons(i);
+        /* vec = vec.cons(i); */
+        vec = cons(i, vec);
     }
-    /* for (int i = 0; i < 100; ++i) { */
-    /*     std::cout << vec.lookup(i) << std::endl; */
-    /* } */
+    for (int i = 0; i < 100; ++i) {
+        /* std::cout << vec.head() << std::endl; */
+        std::cout << vec.lookup(i) << std::endl;
+        /* vec = vec.tail(); */
+    }
 }

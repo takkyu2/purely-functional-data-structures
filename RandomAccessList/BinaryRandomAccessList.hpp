@@ -1,5 +1,7 @@
 #include <memory>
+#include <iostream>
 #include <variant>
+#include <stdexcept>
 #include "../List/List.hpp"
 
 template <typename Elem>
@@ -13,9 +15,8 @@ private:
         Elem elem;
     };
     class Tree {
-    private:
-        std::variant<Leaf, Node> m_tree;
     public:
+        std::variant<Leaf, Node> m_tree;
         Tree() = default;
         Tree(Leaf lf) : m_tree(lf) {}
         Tree(Node nd) : m_tree(nd) {}
@@ -28,6 +29,10 @@ private:
         }
         Elem lookupTree(int i) const {
             if (i == 0 && std::holds_alternative<Leaf>(m_tree)) return std::get<Leaf>(m_tree).elem;
+            else if (std::holds_alternative<Leaf>(m_tree)) {
+                std::cerr << "FF" << std::endl;
+                throw std::runtime_error("FF");
+            }
             else {
                 auto [sz, left, right] = std::get<Node>(m_tree);
                 if (i < sz / 2) return left->lookupTree(i);
@@ -36,6 +41,10 @@ private:
         }
         Tree updateTree(int i, Elem y) const {
             if (i == 0 && std::holds_alternative<Leaf>(m_tree)) return Leaf(y);
+            else if (std::holds_alternative<Leaf>(m_tree)) {
+                std::cerr << "FF2" << std::endl;
+                throw std::runtime_error("FF");
+            }
             else {
                 auto [sz, left, right] = std::get<Node>(m_tree);
                 if (i < sz / 2) return Node(sz, left.updateTree(i, y), right);
@@ -81,17 +90,20 @@ private:
         return std::make_shared<Tree>(Tree(Node(t1->size()+t2->size(), t1, t2)));
     }
     BinaryRandomAccessList consTree(const std::shared_ptr<Tree> t) const {
-        if (isEmpty()) return RList();
+        if (isEmpty()) return RList().cons(Digit(t));
         else if (headIsZero()) return RList(m_rlist.tail().cons(Digit(t)));
         else return RList(rlistTail().consTree(link(t, headGetOne().tr)).m_rlist.cons(Digit()));
     }
     std::tuple<std::shared_ptr<Tree>, BinaryRandomAccessList> unconsTree() const {
-        if (rlistTail().isEmpty() && headIsOne()) return {headGetOne().tr, BinaryRandomAccessList()};
-        else if (headIsOne()) return {headGetOne().tr, cons(Zero(), rlistTail())};
+        if (m_rlist.isEmpty()) {
+            std::cerr << "EMPTY"<<std::endl;
+            throw std::runtime_error("a");
+        } else if (rlistTail().isEmpty() && headIsOne()) return {headGetOne().tr, BinaryRandomAccessList()};
+        else if (headIsOne()) return {headGetOne().tr, m_rlist.tail().cons(Digit())};
         else {
-            auto [t, tsp] = tail().unconsTree();
-            auto nd = std::get<Node>(*t);
-            return {nd.left, cons(One(nd.right), tsp)};
+            auto [t, tsp] = rlistTail().unconsTree();
+            auto nd = std::get<Node>(t->m_tree);
+            return {nd.left, tsp.m_rlist.cons(Digit(nd.right))};
         }
     }
 public:
@@ -107,12 +119,12 @@ public:
     BinaryRandomAccessList cons(Elem x) const {
         return consTree(std::make_shared<Tree>(Tree(Leaf(x))));
     }
-    /* friend BinaryRandomAccessList cons(Elem x, const BinaryRandomAccessList q) { */
-    /*     return q.cons(x); */
-    /* } */
+    friend BinaryRandomAccessList cons(Elem x, const BinaryRandomAccessList q) {
+        return q.cons(x);
+    }
     Elem head() const {
         auto [lf, tmp] = unconsTree();
-        return std::get<Leaf>(lf).elem;
+        return std::get<Leaf>(lf->m_tree).elem;
     }
     BinaryRandomAccessList tail() const {
         auto [tmp, tsp] = unconsTree();

@@ -42,9 +42,9 @@ Yet another implementation of the immutable data structures in Okasaki's textboo
 * [Real Time Deque](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/RealTimeDeque.hpp)
 
 ### Chapter 9
-* Binary Random Access List
-* Skew Binary Random Access List
-* Skew Binomial Heap
+* [Binary Random Access List](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/RandomAccessList/BinaryRandomAccessList.hpp)
+* [Skew Binary Random Access List](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/RandomAccessList/BinaryRandomAccessList.hpp)
+* [Skew Binomial Heap](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Heap/SkewBinomialHeap.hpp)
 
 ### Chapter 10
 * Alt Binary Random Access List

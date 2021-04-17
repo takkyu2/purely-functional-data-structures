@@ -49,7 +49,7 @@ Yet another implementation of the immutable data structures in Okasaki's textboo
 ## Disclaimer
 In Chapter 10 and 11, we need a polymorphic recursion.
 Although the static typing system of C++ forbids a proliferation of infinite number of types at compile time (i.e., a genuine polymorphic recursion),
-we can introduce the auxiliary cutoff of the recursion with constexpr if. If the depth of the recursion exceeds the cutoff, the runtime exception is thrown.
+we can introduce the auxiliary cutoff for the number of the recursions with constexpr if and use a pseudo "polymorphic recursion". If the depth of the recursion exceeds the cutoff, the runtime exception is thrown.
 
 ### Chapter 10
 * [Alt Binary Random Access List](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/RandomAccessList/AltBinaryRandomAccessList.hpp)

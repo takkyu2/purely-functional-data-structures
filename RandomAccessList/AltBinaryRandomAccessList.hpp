@@ -5,28 +5,28 @@
 #include <type_traits>
 #include "../utils/utils.hpp"
 
-constexpr int cutoff = 10;
+constexpr int cutoff = 17;
 
 template <typename T>
 class Printer;
 
 struct Nil {};
 
-template <typename Elem>
+template <typename Elem, typename Basetype>
 class AltBinaryRandomAccessList {
 private:
     struct Zero {
-        std::shared_ptr<AltBinaryRandomAccessList<nested_tuple<1,Elem>>> m_next = std::make_shared<AltBinaryRandomAccessList<nested_tuple<1,Elem>>>(AltBinaryRandomAccessList<nested_tuple<1,Elem>>(Nil()));
+        std::shared_ptr<AltBinaryRandomAccessList<nested_tuple<1,Elem>, Basetype>> m_next = std::make_shared<AltBinaryRandomAccessList<nested_tuple<1,Elem>, Basetype>>(AltBinaryRandomAccessList<nested_tuple<1,Elem>, Basetype>(Nil()));
     };
     struct One {
         One() = default;
         One(Elem elem) 
             : elem(elem)
         {}
-        One(Elem elem, std::shared_ptr<AltBinaryRandomAccessList<nested_tuple<1,Elem>>> seq) 
+        One(Elem elem, std::shared_ptr<AltBinaryRandomAccessList<nested_tuple<1,Elem>, Basetype>> seq) 
             : elem(elem), m_next(seq) {}
         Elem elem;
-        std::shared_ptr<AltBinaryRandomAccessList<nested_tuple<1,Elem>>> m_next = std::make_shared<AltBinaryRandomAccessList<nested_tuple<1,Elem>>>(AltBinaryRandomAccessList<nested_tuple<1,Elem>>(Nil()));
+        std::shared_ptr<AltBinaryRandomAccessList<nested_tuple<1,Elem>,Basetype>> m_next = std::make_shared<AltBinaryRandomAccessList<nested_tuple<1,Elem>,Basetype>>(AltBinaryRandomAccessList<nested_tuple<1,Elem>,Basetype>(Nil()));
     };
     std::variant<Nil, Zero, One> m_seq;
     static AltBinaryRandomAccessList make_nil() {
@@ -41,7 +41,7 @@ private:
         return One(args...);
     }
     std::tuple<Elem, AltBinaryRandomAccessList> uncons() const {
-        if constexpr (std::is_same_v<Elem, nested_tuple<cutoff,int>>) {
+        if constexpr (std::is_same_v<Elem, nested_tuple<cutoff, Basetype>>) {
             throw std::runtime_error("CUTOFF exceeded!");
             return std::tuple<Elem, AltBinaryRandomAccessList>(); 
         } else {
@@ -69,7 +69,7 @@ private:
     }
     template <typename F>
     AltBinaryRandomAccessList fupdate(F f, int i) {
-        if constexpr (std::is_same_v<Elem, nested_tuple<cutoff,int>>) {
+        if constexpr (std::is_same_v<Elem, nested_tuple<cutoff,Basetype>>) {
             throw std::runtime_error("CUTOFF exceeded!");
             return std::tuple<Elem, AltBinaryRandomAccessList>(); 
         } else {
@@ -111,7 +111,7 @@ public:
         return std::holds_alternative<Nil>(m_seq);
     }
     AltBinaryRandomAccessList cons(Elem x) const {
-        if constexpr (std::is_same_v<Elem, nested_tuple<cutoff,int>>) {
+        if constexpr (std::is_same_v<Elem, nested_tuple<cutoff,Basetype>>) {
             throw std::runtime_error("CUTOFF exceeded!");
             return AltBinaryRandomAccessList();
         } else  {
@@ -123,7 +123,7 @@ public:
                     return make_one(x, ps.m_next);
                 },
                 [] (Elem x, One ps) {
-                    return make_zero(std::make_shared<AltBinaryRandomAccessList<nested_tuple<1,Elem>>>(ps.m_next->cons(std::make_tuple(x, ps.elem))));
+                    return make_zero(std::make_shared<AltBinaryRandomAccessList<nested_tuple<1,Elem>, Basetype>>(ps.m_next->cons(std::make_tuple(x, ps.elem))));
                 }
             };
             return std::visit(std::bind_front(visitor_cons, x), m_seq);
@@ -138,7 +138,7 @@ public:
         return xs;
     }
     Elem lookup(int i) const {
-        if constexpr (std::is_same_v<Elem, nested_tuple<cutoff,int>>) {
+        if constexpr (std::is_same_v<Elem, nested_tuple<cutoff,Basetype>>) {
             throw std::runtime_error("CUTOFF exceeded!");
             return Elem();
         } else  {
@@ -168,3 +168,6 @@ public:
         return fupdate([y](Elem x){return y;}, i);
     }
 };
+
+template <typename Elem>
+using AltBinaryRandomAccessListBase = AltBinaryRandomAccessList<Elem, Elem>;

@@ -55,8 +55,8 @@ Yet another implementation of the immutable data structures in Okasaki's textboo
 * Trie of Trees
 
 ### Chapter 11
-* Implicit Queue
-* Simple Catenable Deque
+* [Implicit Queue](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/ImplicitQueue.hpp)
+* [Simple Catenable Deque](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/SimpleCatenableDeque.hpp)
 * Implicit Catenable Deque
 
 ## References

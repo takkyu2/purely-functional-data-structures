@@ -27,7 +27,19 @@ struct Cmpd {
 
 template <typename Elem, typename Basetype>
 struct CmpdElem {
+    CmpdElem() = default;
+    CmpdElem(Simple<Elem> s) : m_cmpdelem(s) {}
+    CmpdElem(Cmpd<Elem, Basetype> s) : m_cmpdelem(s) {}
     std::variant<Simple<Elem>, Cmpd<Elem, Basetype>> m_cmpdelem;
+    bool isSimple() const {
+        return std::holds_alternative<Simple<Elem>>(m_cmpdelem);
+    }
+    Simple<Elem> getSimple() const {
+        return std::get<Simple<Elem>>(m_cmpdelem);
+    }
+    Cmpd<Elem, Basetype> getCmpd() const {
+        return std::get<Cmpd<Elem,Basetype>>(m_cmpdelem);
+    }
 };
 
 template <size_t I,typename T, typename Basetype> 
@@ -82,7 +94,7 @@ private:
     }
     template <typename F>
     static Suspcmpd make_thunk(F&& lam) {
-        return Suspdeque(make_lazy_val(std::forward<F>(lam)));
+        return Suspcmpd(make_lazy_val(std::forward<F>(lam)));
     }
 
     template <typename... Args>
@@ -128,7 +140,7 @@ public:
     Elem head() const {
         if constexpr (std::is_same_v<Elem, nested_cmpd<cutoff, Basetype, Basetype>>) {
             throw std::runtime_error("CUTOFF exceeded!");
-            return Elem();
+            return Elem {};
         } else {
             if (std::holds_alternative<Shallow>(m_deq)) {
                 return std::get<Shallow>(m_deq).m_shallow.head();
@@ -185,8 +197,8 @@ public:
                 },
                 [](Deep deep, Shallow d) {
                     auto [f, a, m, b, r] = deep;
-                    if (d.m_shallow.size() < 4) return make_deep(f,a,m,b,dappendR(r, d));
-                    else return make_deep(f,a,m, make_thunk([b=b, r=r](){return b().cons(Simple(r));}), d);
+                    if (d.m_shallow.size() < 4) return make_deep(f,a,m,b,dappendR(r, d.m_shallow));
+                    else return make_deep(f,a,m, make_thunk([b=b, r=r](){return b().cons(Simple(r));}), d.m_shallow);
                 },
                 [](Deep d1, Deep d2) {
                     auto [f1,a1,m1,b1,r1] = d1;
@@ -221,22 +233,22 @@ public:
                 if (f.size() > 3) return make_deep(f.tail(),a,m,b,r);
                 else if (!a().isEmpty()) {
                     auto hd = a().head();
-                    if (std::holds_alternative<Simple>(hd)) {
-                        auto fp = dappendL(f.tail(), std::get<Simple>(hd).m_simple);
+                    if (hd.isSimple()) {
+                        auto fp = dappendL(f.tail(), hd.getSimple().m_simple);
                         return make_deep(fp, make_thunk([a=a](){return a().tail();}), m,b,r);
                     } else {
-                        auto [fp, cp, rp] = std::get<Cmpd>(hd);
+                        auto [fp, cp, rp] = hd.getCmpd();
                         auto fpp = dappendL(f.tail(), fp);
-                        auto app = make_thunk([cp=cp, rp=rp, a](){return cp() + replaceHead(Simple(rp), a());});
+                        auto app = make_thunk([cp=cp, rp=rp, a=a](){return cp() + a().replaceHead(Simple(rp));});
                         return make_deep(fpp, app, m, b, r);
                     }
                 } else if (!b().isEmpty()) {
                     auto hd = b().head();
-                    if (std::holds_alternative<Simple>(hd)) {
+                    if (hd.isSimple()) {
                         auto fp = dappendL(f.tail(), m);
-                        return make_deep(fp,make_thunk([](){return ImplicitCatenableDeque<CmpdElem<Elem, Basetype>, Basetype>();}), std::get<Simple>(hd).m_simple, make_thunk([b=b](){return b().tail();}),r);
+                        return make_deep(fp,make_thunk([](){return ImplicitCatenableDeque<CmpdElem<Elem, Basetype>, Basetype>();}), hd.getSimple().m_simple, make_thunk([b=b](){return b().tail();}),r);
                     } else {
-                        auto [fp, cp, rp] = std::get<Cmpd>(hd);
+                        auto [fp, cp, rp] = hd.getCmpd();
                         auto fpp = dappendL(f.tail(), m);
                         auto app = make_thunk([fp=fp,cp=cp](){return cp().cons(Simple(fp));});
                         return make_deep(fpp, app, rp, make_thunk([b=b](){return b().tail();}), r);
@@ -262,34 +274,35 @@ public:
             return ImplicitCatenableDeque();
         } else {
             if (std::holds_alternative<Shallow>(m_deq)) {
-                return Shallow(std::get<Shallow>(m_deq).m_shallow.init());
+                return make_shallow(std::get<Shallow>(m_deq).m_shallow.init());
             } else {
                 auto [f, a, m, b, r] = std::get<Deep>(m_deq);
                 if (r.size() > 3) return make_deep(f,a,m,b,r.init());
                 else if (!b().isEmpty()) {
                     auto hd = b().last();
-                    if (std::holds_alternative<Simple>(hd)) {
-                        auto rp = dappendR(std::get<Simple>(hd).m_simple, r.init());
-                        return make_deep(f, a, m,make_thunk([b=b](){return b().last();}),rp);
+                    if (hd.isSimple()) {
+                        auto rp = dappendR(hd.getSimple().m_simple, r.init());
+                        return make_deep(f, a, m,make_thunk([b=b](){return b().init();}),rp);
                     } else {
-                        auto [fp, cp, rp] = std::get<Cmpd>(hd);
+                        auto [fp, cp, rp] = hd.getCmpd();
                         auto rpp = dappendR(rp, r.init());
-                        auto bpp = make_thunk([cp=cp, fp=fp, b](){return cp() + replaceLast(b(), Simple(rp));});
+                        auto bpp = make_thunk([cp=cp, fp=fp, b=b](){return b().replaceLast(Simple(fp))+cp();});
                         return make_deep(f, a, m, bpp, rpp);
+                        return ImplicitCatenableDeque();
                     }
-                } else if (!b().isEmpty()) {
-                    auto hd = b().head();
-                    if (std::holds_alternative<Simple>(hd)) {
-                        auto fp = dappendL(f.tail(), m);
-                        return make_deep(fp,make_thunk([](){return ImplicitCatenableDeque<CmpdElem<Elem, Basetype>, Basetype>();}), std::get<Simple>(hd).m_simple, make_thunk([b=b](){return b().tail();}),r);
+                } else if (!a().isEmpty()) {
+                    auto hd = a().head();
+                    if (hd.isSimple()) {
+                        auto rp = dappendR(m, r.init());
+                        return make_deep(f,make_thunk([a=a](){return a().init();}), hd.getSimple().m_simple,make_thunk([](){return ImplicitCatenableDeque<CmpdElem<Elem, Basetype>, Basetype>();}),rp);
                     } else {
-                        auto [fp, cp, rp] = std::get<Cmpd>(hd);
-                        auto fpp = dappendL(f.tail(), m);
-                        auto app = make_thunk([fp=fp,cp=cp](){return cp().cons(Simple(fp));});
-                        return make_deep(fpp, app, rp, make_thunk([b=b](){return b().tail();}), r);
+                        auto [fp, cp, rp] = hd.getCmpd();
+                        auto rpp = dappendR(m, r.init());
+                        auto bpp = make_thunk([rp=rp,cp=cp](){return cp().cons(Simple(rp));});
+                        return make_deep(f, make_thunk([a=a](){return a().init();}), rp, bpp, rpp);
                     }
                 } else {
-                    return make_shallow(dappendL(f.tail(), m)) + make_shallow(r);
+                    return make_shallow(f) + make_shallow(dappendR(m, r.init()));
                 }
             }
         }

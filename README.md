@@ -47,10 +47,10 @@ Yet another implementation of the immutable data structures in Okasaki's textboo
 * [Skew Binomial Heap](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Heap/SkewBinomialHeap.hpp)
 
 ### Chapter 10
-* Alt Binary Random Access List
-* Bootstrapped Queue
-* Catenable List
-* Trie
+* [Alt Binary Random Access List](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/RandomAccessList/AltBinaryRandomAccessList.hpp)
+* [Bootstrapped Queue](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/BootstrappedQueue.hpp)
+* [Catenable List](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/CatenableList.hpp)
+* [Trie](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Tree/Trie.hpp)
 * Hash Table
 * Trie of Trees
 

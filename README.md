@@ -46,6 +46,11 @@ Yet another implementation of the immutable data structures in Okasaki's textboo
 * [Skew Binary Random Access List](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/RandomAccessList/BinaryRandomAccessList.hpp)
 * [Skew Binomial Heap](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Heap/SkewBinomialHeap.hpp)
 
+## Disclaimer
+In Chapter 10 and 11, we need a polymorphic recursion.
+Although the static typing system of C++ forbids a proliferation of infinite number of types at compile time (i.e., a genuine polymorphic recursion),
+we can introduce the auxiliary cutoff of the recursion with constexpr if. If the depth of the recursion exceeds the cutoff, the runtime exception is thrown.
+
 ### Chapter 10
 * [Alt Binary Random Access List](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/RandomAccessList/AltBinaryRandomAccessList.hpp)
 * [Bootstrapped Queue](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/BootstrappedQueue.hpp)

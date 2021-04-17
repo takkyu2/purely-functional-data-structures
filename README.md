@@ -6,7 +6,7 @@ The code is at a **very** early stage. There should be bugs, rough edges, and so
 
 In Chapter 10 and 11, we need a polymorphic recursion.
 Although the static typing system of C++ forbids a proliferation of infinite number of types at compile time (i.e., a genuine polymorphic recursion),
-we can introduce the auxiliary cutoff for the number of the recursions with constexpr-if. I will use this pseudo "polymorphic recursion". If the depth of the recursion exceeds the cutoff, the runtime exception is thrown.
+we can introduce the auxiliary cutoff for the number of the recursions with constexpr-if: If the depth of the recursion exceeds this cutoff number, the runtime exception is thrown. I will use this pseudo "polymorphic recursion".
 
 ## List of data structures
 

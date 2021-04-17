@@ -53,6 +53,9 @@ public:
     bool isEmpty() const {
         return fr_sz + re_sz == 0;
     }
+    int size() const {
+        return fr_sz + re_sz;
+    }
     RealTimeDeque cons(Elem x) const {
         return RealTimeDeque(fr_sz+1, re_sz, front.cons(x), rear, exec1(front_schedule), exec1(rear_schedule)).check();
     }

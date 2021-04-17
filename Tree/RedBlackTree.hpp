@@ -57,6 +57,9 @@ public:
     friend RBTree<Elem> FromOrdList_helper<Elem>(ImList<Elem>& head, int sz, int depth);
     friend RBTree<Elem> FromOrdList<Elem>(ImList<Elem> head, int sz);
 
+    std::tuple<Elem, std::shared_ptr<RBTree>, std::shared_ptr<RBTree>> getNode() const {
+        return {m_tree.x, m_tree.l, m_tree.r};
+    }
     bool member(Elem x) const {
         if (std::holds_alternative<Empty>(m_tree))
             return false;
@@ -309,11 +312,11 @@ private:
 public:
     FiniteMap() = default;
     FiniteMap(RBTree<kv_pair> b) : m_bst(b) { }
-    FiniteMap empty() { return {}; }
-    FiniteMap bind(Key k, Val v) {
+    FiniteMap empty() const { return {}; }
+    FiniteMap bind(Key k, Val v) const {
         return m_bst.insert({k, v});
     }
-    Val lookup(Key k) {
+    Val lookup(Key k) const {
         return m_bst.getElem({k, Val{}}).val;
     }
 };
@@ -348,31 +351,3 @@ RBTree<Elem> FromOrdList(ImList<Elem> head) {
     depth--;
     return FromOrdList_helper(head, sz, depth);
 }
-
-int main() {
-    RBTree<int> bst {};
-    bst = bst.insert(3);
-    bst.print(); std::cout << std::endl;
-    bst = bst.insert(2);
-    bst.print(); std::cout << std::endl;
-    std::cerr << std::endl;
-    bst = bst.insert(1);
-    bst.print_bfs(); std::cout << std::endl;
-    RBTree<int> bst2;
-    for (int elem = 0; elem < 300; ++elem) {
-        bst2 = bst2.insert(elem);
-    }
-    bst2.print_bfs(); std::cout << std::endl;
-    bst2.print(); std::cout << std::endl;
-    std::cout << bst2.member(122) << std::endl;
-    std::cout << bst2.member(200) << std::endl;
-
-
-    ImList<int> lis;
-    for (int i = 80; i >= 0; --i) {
-        lis = lis.cons(i);
-    }
-    auto ttt = FromOrdList(lis);
-    ttt.print_bfs();
-}
-

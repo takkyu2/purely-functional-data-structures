@@ -57,7 +57,7 @@ Yet another implementation of the immutable data structures in Okasaki's textboo
 ### Chapter 11
 * [Implicit Queue](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/ImplicitQueue.hpp)
 * [Simple Catenable Deque](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/SimpleCatenableDeque.hpp)
-* Implicit Catenable Deque
+* [Implicit Catenable Deque](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/SimpleCatenableDeque.hpp)
 
 ## References
 type erasure: [C++ Templates - The Complete Guide](http://www.tmplbook.com/)

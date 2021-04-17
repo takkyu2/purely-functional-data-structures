@@ -2,7 +2,7 @@
 Yet another implementation of the immutable data structures in Okasaki's textbook, "Purely Functional Data Structures", in C++.
 
 ## Disclaimer
-The code is at a **very** early stage. There should be bugs, rough edges, and so on.
+The code is at a **very** early stage. There should be bugs and rough edges.
 
 In Chapter 10 and 11, we need a polymorphic recursion.
 Although the static typing system of C++ forbids a proliferation of infinite number of types at compile time (i.e., a genuine polymorphic recursion),

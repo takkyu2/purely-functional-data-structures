@@ -34,11 +34,11 @@ private:
     }
     template <typename... Args>
     static AltBinaryRandomAccessList make_zero(Args&&... args) {
-        return Zero(args...);
+        return Zero(std::forward<Args>(args)...);
     }
     template <typename... Args>
     static AltBinaryRandomAccessList make_one(Args&&... args) {
-        return One(args...);
+        return One(std::forward<Args>(args)...);
     }
     std::tuple<Elem, AltBinaryRandomAccessList> uncons() const {
         if constexpr (std::is_same_v<Elem, nested_tuple<cutoff, Basetype>>) {

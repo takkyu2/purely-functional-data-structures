@@ -67,6 +67,8 @@ we can introduce the auxiliary cutoff for the number of the recursions with cons
 * [Implicit Catenable Deque](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/SimpleCatenableDeque.hpp)
 
 ## References
+okasaki: [Purely Functional Data Structures](https://www.cambridge.org/core/books/purely-functional-data-structures/0409255DA1B48FA731859AC72E34D494)
+
 type erasure: [C++ Templates - The Complete Guide](http://www.tmplbook.com/)
 
 lazy evaluation: [Functional Programming in C++](https://www.manning.com/books/functional-programming-in-c-plus-plus) 

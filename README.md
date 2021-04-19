@@ -1,4 +1,4 @@
-# Immutable-Data-Structures
+# Purely Functional Data Structures in C++
 Yet another implementation of the immutable data structures in Okasaki's textbook, "Purely Functional Data Structures", in C++.
 
 ## Disclaimer

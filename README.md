@@ -1,5 +1,15 @@
-# Immutable-Data-Structures
+# Purely Functional Data Structures in C++
 Yet another implementation of the immutable data structures in Okasaki's textbook, "Purely Functional Data Structures", in C++.
+
+## Requirements
+A C++20 compatible compiler is necessary. I verified that the codes compiled successfully in g++ 10.2.0 with `-std=c++20` flag.
+
+## Disclaimers
+* The code is at a **very** early stage. There should be bugs and rough edges.
+
+* In Chapter 10 and 11, we need a polymorphic recursion.
+Although the static typing system of C++ forbids a proliferation of infinite number of types at compile time (i.e., a genuine polymorphic recursion),
+we can introduce the auxiliary cutoff for the number of the recursions with constexpr-if; If the depth of the recursion exceeds this cutoff number, the runtime exception is thrown. I will use this pseudo "polymorphic recursion".
 
 ## List of data structures
 
@@ -57,9 +67,11 @@ Yet another implementation of the immutable data structures in Okasaki's textboo
 ### Chapter 11
 * [Implicit Queue](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/ImplicitQueue.hpp)
 * [Simple Catenable Deque](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/SimpleCatenableDeque.hpp)
-* Implicit Catenable Deque
+* [Implicit Catenable Deque](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/List/SimpleCatenableDeque.hpp)
 
 ## References
+okasaki: [Purely Functional Data Structures](https://www.cambridge.org/core/books/purely-functional-data-structures/0409255DA1B48FA731859AC72E34D494)
+
 type erasure: [C++ Templates - The Complete Guide](http://www.tmplbook.com/)
 
 lazy evaluation: [Functional Programming in C++](https://www.manning.com/books/functional-programming-in-c-plus-plus) 

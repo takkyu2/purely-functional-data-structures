@@ -1,6 +1,9 @@
 # Purely Functional Data Structures in C++
 Yet another implementation of the immutable data structures in Okasaki's textbook, "Purely Functional Data Structures", in C++.
 
+## Requirements
+A C++20 compatible compiler is necessary. I verified that the codes compiled successfully in g++ 10.2.0 with `-std=c++20` flag.
+
 ## Disclaimers
 * The code is at a **very** early stage. There should be bugs and rough edges.
 

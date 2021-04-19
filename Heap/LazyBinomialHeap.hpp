@@ -41,7 +41,7 @@ private:
         return force().head();
     }
     LazyBinomialHeap tail() const {
-        return make_thunk([this_heap=*this](){ return this_heap.tail();});
+        return make_thunk([this_heap=*this](){ return this_heap.force().tail();});
     }
     friend LazyBinomialHeap cons(Tree t, LazyBinomialHeap h) {
         return make_thunk([t,h]() { return cons(t, h.force());});

@@ -26,7 +26,7 @@ public:
     LeftistHeap(Empty e) { }
     LeftistHeap(SubLeftistHeap t) : m_heap(t) { }
     LeftistHeap(const LeftistHeap& bst) = default;
-    static LeftistHeap LeftistHeapify(std::initializer_list<Elem> il) {
+    static LeftistHeap Heapify(std::initializer_list<Elem> il) {
         if (il.size() == 0) return {};
         std::stack<LeftistHeap> now_st, next_st;
         for (Elem e: il) now_st.push(e);

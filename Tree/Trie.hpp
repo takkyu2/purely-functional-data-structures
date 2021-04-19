@@ -1,3 +1,5 @@
+#ifndef TRIE
+#define TRIE
 #include "BinarySearchTree.hpp"
 #include "../List/List.hpp"
 #include <optional>
@@ -43,3 +45,4 @@ public:
         }
     }
 };
+#endif

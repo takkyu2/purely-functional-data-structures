@@ -1,3 +1,5 @@
+#ifndef CATENABLELIST
+#define CATENABLELIST
 #include "../utils/utils.hpp"
 #include "RealTimeQueue.hpp"
 #include <variant>
@@ -65,3 +67,4 @@ public:
 
 template <typename Elem>
 using CatenableListBase = CatenableList<Elem, Elem>;
+#endif

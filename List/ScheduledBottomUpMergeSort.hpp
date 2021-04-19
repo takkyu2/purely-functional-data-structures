@@ -1,3 +1,5 @@
+#ifndef SCHEDULEDBOTTOMUPMERGESORT
+#define SCHEDULEDBOTTOMUPMERGESORT
 #include "List.hpp"
 #include "Stream.hpp"
 #include <tuple>
@@ -78,3 +80,4 @@ public:
         return streamToList(mrgAll({}, m_sortable.segs));
     }
 };
+#endif

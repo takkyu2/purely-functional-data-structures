@@ -1,5 +1,5 @@
-#ifndef STREAM_HPP
-#define STERAM_HPP
+#ifndef STREAM
+#define STERAM
 #include <string>
 #include <memory>
 #include <ranges>

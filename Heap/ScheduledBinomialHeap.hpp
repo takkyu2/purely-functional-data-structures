@@ -1,3 +1,5 @@
+#ifndef SCHEDULEDBINOMIALHEAP
+#define SCHEDULEDBINOMIALHEAP
 #include "../List/Stream.hpp"
 #include "../List/List.hpp"
 #include "../utils/utils.hpp"
@@ -142,3 +144,4 @@ public:
         return ScheduledBinomialHeap(normalize(ds2), {});
     }
 };
+#endif

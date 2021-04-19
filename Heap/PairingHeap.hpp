@@ -1,15 +1,17 @@
+#ifndef PAIRINGHEAP
+#define PAIRINGHEAP
 #include <variant>
 #include "../utils/utils.hpp"
 #include "../List/List.hpp"
 
 template <Ordered Elem>
-class BinaryHeap {
+class PairingHeap {
 public:
-    BinaryHeap() = default;
-    BinaryHeap(Elem e) : m_heap(Tree(e)) { }
-    BinaryHeap(Elem e, std::shared_ptr<BinaryHeap> left, std::shared_ptr<BinaryHeap> right)
+    PairingHeap() = default;
+    PairingHeap(Elem e) : m_heap(Tree(e)) { }
+    PairingHeap(Elem e, std::shared_ptr<PairingHeap> left, std::shared_ptr<PairingHeap> right)
         : m_heap(Tree(e, left, right)) { }
-    BinaryHeap(Elem e, std::shared_ptr<BinaryHeap> left)
+    PairingHeap(Elem e, std::shared_ptr<PairingHeap> left)
         : m_heap(Tree(e, left)) { }
     bool isEmpty() {
         return std::holds_alternative<Empty>(m_heap);
@@ -18,33 +20,33 @@ public:
         if (isEmpty()) throw std::runtime_error("error in findMin, empty");
         return std::get<Tree>(m_heap).getelem();
     }
-    friend BinaryHeap merge(BinaryHeap h1, BinaryHeap h2) {
+    friend PairingHeap merge(PairingHeap h1, PairingHeap h2) {
         if (h1.isEmpty()) return h2;
         if (h2.isEmpty()) return h1;
         auto t1 = h1.get();
         auto t2 = h2.get();
         if (t1.getelem() < t2.getelem()) {
-            auto newleft = std::make_shared<BinaryHeap>(BinaryHeap(t2.elem, t2.left, t1.left));
-            return BinaryHeap(t1.getelem(), newleft);
+            auto newleft = std::make_shared<PairingHeap>(PairingHeap(t2.elem, t2.left, t1.left));
+            return PairingHeap(t1.getelem(), newleft);
         } else {
-            auto newleft = std::make_shared<BinaryHeap>(BinaryHeap(t1.elem, t1.left, t2.left));
-            return BinaryHeap(t2.getelem(), newleft);
+            auto newleft = std::make_shared<PairingHeap>(PairingHeap(t1.elem, t1.left, t2.left));
+            return PairingHeap(t2.getelem(), newleft);
         }
     }
-    BinaryHeap insert(Elem e) {
-        return merge(BinaryHeap(e), *this);
+    PairingHeap insert(Elem e) {
+        return merge(PairingHeap(e), *this);
     }
-    BinaryHeap mergePairs() {
-        if (isEmpty()) return BinaryHeap();
+    PairingHeap mergePairs() {
+        if (isEmpty()) return PairingHeap();
         auto t = get();
         auto left = t.left, right = t.right;
         if (right->isEmpty()) return *this;
         auto t_right = right->get();
         auto r_right = t_right.right;
-        return merge(merge(BinaryHeap(t.getelem(), left), BinaryHeap(t_right.getelem(), t_right.left)), r_right->mergePairs());
+        return merge(merge(PairingHeap(t.getelem(), left), PairingHeap(t_right.getelem(), t_right.left)), r_right->mergePairs());
     }
-    BinaryHeap deleteMin() {
-        if (isEmpty()) return BinaryHeap();
+    PairingHeap deleteMin() {
+        if (isEmpty()) return PairingHeap();
         auto t = get();
         return t.left->mergePairs();
     }
@@ -52,15 +54,15 @@ private:
     struct Tree {
         Tree() = default;
         Tree(Elem e) : elem(e) { }
-        Tree(Elem e, std::shared_ptr<BinaryHeap> left, std::shared_ptr<BinaryHeap> right) 
+        Tree(Elem e, std::shared_ptr<PairingHeap> left, std::shared_ptr<PairingHeap> right) 
             : elem(e), left(left), right(right) { }
-        Tree(Elem e, std::shared_ptr<BinaryHeap> left) 
+        Tree(Elem e, std::shared_ptr<PairingHeap> left) 
             : elem(e), left(left) { }
         Elem getelem() {
             return elem;
         }
         Elem elem;
-        std::shared_ptr<BinaryHeap> left, right;
+        std::shared_ptr<PairingHeap> left, right;
     };
     Tree get() {
         auto t = std::get<Tree>(m_heap);
@@ -73,9 +75,9 @@ template <Ordered Elem>
 class Heap {
 public:
     template <Ordered T>
-    friend BinaryHeap<T> toBinary(Heap<T>);
+    friend PairingHeap<T> toBinary(Heap<T>);
     template <Ordered T>
-    friend BinaryHeap<T> toBinary_helper(Heap<T>, ImList<std::shared_ptr<Heap<T>>>);
+    friend PairingHeap<T> toBinary_helper(Heap<T>, ImList<std::shared_ptr<Heap<T>>>);
     Heap() = default;
     Heap(Elem e) : m_heap(Tree(e)) { }
     Heap(Elem e, ImList<std::shared_ptr<Heap>> children) : m_heap(Tree(e, children)) { }
@@ -129,44 +131,35 @@ private:
 };
 
 template <Ordered Elem>
-BinaryHeap<Elem> toBinary(Heap<Elem> h) {
+PairingHeap<Elem> toBinary(Heap<Elem> h) {
     return toBinary_helper(h, ImList<std::shared_ptr<Heap<Elem>>>());
 }
 
 template <Ordered Elem>
-BinaryHeap<Elem> toBinary_helper(Heap<Elem> h, ImList<std::shared_ptr<Heap<Elem>>> sib) {
-    if (h.isEmpty()) return BinaryHeap<Elem>();
+PairingHeap<Elem> toBinary_helper(Heap<Elem> h, ImList<std::shared_ptr<Heap<Elem>>> sib) {
+    if (h.isEmpty()) return PairingHeap<Elem>();
     auto [x, hc] = h.get();
     if (hc.isEmpty()) {
         if (sib.isEmpty())
-            return BinaryHeap<Elem>(x);
+            return PairingHeap<Elem>(x);
         else
-            return BinaryHeap<Elem>(x, 
-                    std::make_shared<BinaryHeap<Elem>>(BinaryHeap<Elem>()), 
-                    std::make_shared<BinaryHeap<Elem>>(toBinary_helper(*sib.head(), sib.tail()))
+            return PairingHeap<Elem>(x, 
+                    std::make_shared<PairingHeap<Elem>>(PairingHeap<Elem>()), 
+                    std::make_shared<PairingHeap<Elem>>(toBinary_helper(*sib.head(), sib.tail()))
                     );
     } else {
         if (sib.isEmpty())
-            return BinaryHeap<Elem>(x
-                    ,std::make_shared<BinaryHeap<Elem>>(toBinary_helper(*hc.head(), hc.tail()))
-                    ,std::make_shared<BinaryHeap<Elem>>(BinaryHeap<Elem>())
+            return PairingHeap<Elem>(x
+                    ,std::make_shared<PairingHeap<Elem>>(toBinary_helper(*hc.head(), hc.tail()))
+                    ,std::make_shared<PairingHeap<Elem>>(PairingHeap<Elem>())
                     );
         else
-            return BinaryHeap<Elem>(x
-                    ,std::make_shared<BinaryHeap<Elem>>(toBinary_helper(*hc.head(), hc.tail()))
-                    ,std::make_shared<BinaryHeap<Elem>>(toBinary_helper(*sib.head(), sib.tail()))
+            return PairingHeap<Elem>(x
+                    ,std::make_shared<PairingHeap<Elem>>(toBinary_helper(*hc.head(), hc.tail()))
+                    ,std::make_shared<PairingHeap<Elem>>(toBinary_helper(*sib.head(), sib.tail()))
                     );
     }
 }
 
 
-int main() {
-    Heap<int> h;
-    h = h.insert(1).insert(3).insert(4).insert(-100);
-    BinaryHeap<int> bh = toBinary(h);
-    bh.deleteMin();
-    h.deleteMin();
-}
-
-
-
+#endif

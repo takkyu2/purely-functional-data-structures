@@ -1,3 +1,5 @@
+#ifndef ALTBINARYRANDOMACCESSLIST
+#define ALTBINARYRANDOMACCESSLIST
 #include <tuple>
 #include <variant>
 #include <memory>
@@ -171,3 +173,4 @@ public:
 
 template <typename Elem>
 using AltBinaryRandomAccessListBase = AltBinaryRandomAccessList<Elem, Elem>;
+#endif

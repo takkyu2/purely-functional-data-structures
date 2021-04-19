@@ -1,3 +1,5 @@
+#ifndef IMPLICITQUEUE
+#define IMPLICITQUEUE
 #include <variant>
 #include "../utils/utils.hpp"
 #include "../utils/TypeErasure.hpp"
@@ -128,3 +130,4 @@ public:
 
 template <typename Elem>
 using ImplicitQueueBase = ImplicitQueue<Elem, Elem>;
+#endif

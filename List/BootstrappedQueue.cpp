@@ -7,10 +7,6 @@ int main() {
         que = que.snoc(i);
     }
 
-    /* for (int i = 0; i < 1; ++i) { */
-    /*     std::cout << que.head() << std::endl; */
-    /*     que = que.tail(); */
-    /* } */
     while (!que.isEmpty()) {
         std::cout << que.head() << std::endl;
         que = que.tail();

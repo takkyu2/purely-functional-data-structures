@@ -1,3 +1,5 @@
+#ifndef IMPLICITCATENABLEDEQUE
+#define IMPLICITCATENABLEDEQUE
 #include "RealTimeDeque.hpp"
 #include "../utils/utils.hpp"
 #include <variant>
@@ -312,3 +314,4 @@ public:
 template <typename Elem>
 using ImplicitCatenableDequeBase = ImplicitCatenableDeque<Elem, Elem>;
 
+#endif

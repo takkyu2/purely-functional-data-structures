@@ -1,3 +1,5 @@
+#ifndef REALTIMEDEQUE
+#define REALTIMEDEQUE
 #include "Stream.hpp"
 #include <iostream>
 
@@ -106,3 +108,4 @@ public:
         }
     }
 };
+#endif

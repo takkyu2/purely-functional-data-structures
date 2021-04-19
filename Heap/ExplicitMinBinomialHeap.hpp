@@ -1,3 +1,5 @@
+#ifndef EXPLICITMINBINOMIALHEAP
+#define EXPLICITMINBINOMIALHEAP
 #include <iostream>
 #include <concepts>
 #include <variant>
@@ -10,7 +12,7 @@
 using namespace std::placeholders;
 
 template <Ordered Elem>
-class Heap {
+class ExplicitMinBinomialHeap {
 private:
     class Tree {
     public:
@@ -32,19 +34,19 @@ private:
     std::pair<int, Tree> head() const {
         return m_heap.head();
     }
-    Heap tail() const {
+    ExplicitMinBinomialHeap tail() const {
         return m_heap.tail();
     }
-    friend Heap cons(std::pair<int, Tree> t, Heap h) {
+    friend ExplicitMinBinomialHeap cons(std::pair<int, Tree> t, ExplicitMinBinomialHeap h) {
         return cons(t, h.m_heap);
     }
 public:
-    Heap() = default;
-    Heap(ImList<std::pair<int,Tree>> it) : m_heap(it) { }
+    ExplicitMinBinomialHeap() = default;
+    ExplicitMinBinomialHeap(ImList<std::pair<int,Tree>> it) : m_heap(it) { }
     bool isEmpty() const {
         return m_heap.isEmpty();
     }
-    Heap insTree(Tree t, int rk) const { // always t.getrank() <= t_min.getrank()
+    ExplicitMinBinomialHeap insTree(Tree t, int rk) const { // always t.getrank() <= t_min.getrank()
         if (isEmpty())
             return cons({rk, t}, *this);
 
@@ -54,10 +56,10 @@ public:
         else
             return tail().insTree(link(t, t_min), rk+1);
     }
-    Heap insert(Elem x) {
+    ExplicitMinBinomialHeap insert(Elem x) {
         return insTree({x, {}}, 0);
     }
-    friend Heap merge(Heap h1, Heap h2) {
+    friend ExplicitMinBinomialHeap merge(ExplicitMinBinomialHeap h1, ExplicitMinBinomialHeap h2) {
         if (h1.isEmpty())
             return h2;
         if (h2.isEmpty())
@@ -73,7 +75,7 @@ public:
         else
             return merge(tail1, tail2).insTree(link(head1, head2), h1rk+1);
     }
-    std::pair<Tree, Heap> removeMinTree() {
+    std::pair<Tree, ExplicitMinBinomialHeap> removeMinTree() {
         if (tail().isEmpty())
             return {head().second, {}};
         else {
@@ -98,7 +100,7 @@ public:
         }
         return e;
     }
-    Heap deleteMin() {
+    ExplicitMinBinomialHeap deleteMin() {
         auto [t, ts] = removeMinTree();
         ImList<std::pair<int, Tree>> tr;
         int cnt = 0;
@@ -121,17 +123,17 @@ public:
 };
 
 template <Ordered Elem>
-class ExplicitMin : Heap<Elem> {
+class ExplicitMin : ExplicitMinBinomialHeap<Elem> {
 public:
     ExplicitMin() = default;
-    ExplicitMin(std::pair<int, Heap<Elem>> st) : m_heap(st) { }
+    ExplicitMin(std::pair<int, ExplicitMinBinomialHeap<Elem>> st) : m_heap(st) { }
     Elem findMin() {
         static auto visit_findmin = overloaded {
             [](Empty e) {
                 throw std::runtime_error("no element");
                 return -1;
             },
-            [](std::pair<int, Heap<Elem>> h) {
+            [](std::pair<int, ExplicitMinBinomialHeap<Elem>> h) {
                 return h.first;
             }
         };
@@ -140,9 +142,9 @@ public:
     ExplicitMin insert(Elem x) {
         static auto visit_insert = overloaded {
             [](Empty e, Elem x) {
-                return ExplicitMin(std::make_pair(x, Heap<Elem>{}));
+                return ExplicitMin(std::make_pair(x, ExplicitMinBinomialHeap<Elem>{}));
             },
-            [](std::pair<int, Heap<Elem>> h, Elem x) {
+            [](std::pair<int, ExplicitMinBinomialHeap<Elem>> h, Elem x) {
                 if (x < h.first)
                     return ExplicitMin(std::make_pair(x, h.second.insert(h.first)));
                 else 
@@ -159,7 +161,7 @@ public:
             [](Empty e, auto x) {
                 return x;
             },
-            [](std::pair<int, Heap<Elem>> h1, std::pair<int, Heap<Elem>> h2) {
+            [](std::pair<int, ExplicitMinBinomialHeap<Elem>> h1, std::pair<int, ExplicitMinBinomialHeap<Elem>> h2) {
                 if (h1.first < h2.first) {
                     return std::make_pair(h1.first, merge(h1.second,h2.second).insert(h2.first));
                 } else {
@@ -174,7 +176,7 @@ public:
             [](Empty e) {
                 return ExplicitMin {};
             },
-            [](std::pair<int, Heap<Elem>> h) {
+            [](std::pair<int, ExplicitMinBinomialHeap<Elem>> h) {
                 if (h.second.isEmpty()) {
                     return ExplicitMin {};
                 } else {
@@ -189,7 +191,7 @@ public:
             [](Empty e) {
                 return;
             },
-            [](std::pair<int, Heap<Elem>> h) {
+            [](std::pair<int, ExplicitMinBinomialHeap<Elem>> h) {
                 std::cout << "Min: " << h.first << std::endl;
                 std::cout << "Rest: " << std::endl;
                 h.second.print();
@@ -199,14 +201,6 @@ public:
 
     }
 private:
-    std::variant<Empty, std::pair<int,Heap<Elem>>> m_heap;
+    std::variant<Empty, std::pair<int,ExplicitMinBinomialHeap<Elem>>> m_heap;
 };
-
-int main() {
-    ExplicitMin<int> hp;
-    hp = hp.insert(3).insert(4).insert(8);
-    auto hp2 = hp.insert(10).insert(-100);
-    std::cout << hp2.findMin() << std::endl;
-    hp2 = hp2.deleteMin();
-    hp2.print();
-}
+#endif

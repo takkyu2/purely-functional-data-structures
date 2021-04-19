@@ -1,3 +1,5 @@
+#ifndef TRIEOFTREES
+#define TRIEOFTREES
 #include "RedBlackTree.hpp"
 #include <variant>
 #include <memory>
@@ -65,3 +67,4 @@ public:
         }
     }
 };
+#endif

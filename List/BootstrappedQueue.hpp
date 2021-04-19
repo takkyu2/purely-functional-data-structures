@@ -1,3 +1,5 @@
+#ifndef BOOTSTRAPPEDQUEUE
+#define BOOTSTRAPPEDQUEUE
 #include "../List/List.hpp"
 #include "../utils/utils.hpp"
 #include "../utils/TypeErasure.hpp"
@@ -127,3 +129,4 @@ public:
 
 template <typename Elem>
 using BootstrappedQueueBase = BootstrappedQueue<Elem, Elem>;
+#endif

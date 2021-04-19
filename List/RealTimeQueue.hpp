@@ -1,3 +1,5 @@
+#ifndef REALTIMEQUEUE
+#define REALTIMEQUEUE
 #include "../List/Stream.hpp"
 #include "../List/List.hpp"
 #include "../utils/utils.hpp"
@@ -43,3 +45,4 @@ private:
     ImList<Elem> rear;
     Stream<Elem> schedule;
 };
+#endif

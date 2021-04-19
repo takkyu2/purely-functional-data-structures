@@ -1,3 +1,5 @@
+#ifndef SIMPLECATENABLEDEQUE
+#define SIMPLECATENABLEDEQUE
 #include "RealTimeDeque.hpp"
 #include "../utils/utils.hpp"
 #include <variant>
@@ -215,3 +217,4 @@ public:
 
 template <typename Elem>
 using SimpleCatenableDequeBase = SimpleCatenableDeque<Elem, Elem>;
+#endif

@@ -1,3 +1,5 @@
+#ifndef SKEWBINOMIALHEAP
+#define SKEWBINOMIALHEAP
 #include "../List/List.hpp"
 
 template <typename Elem>
@@ -100,3 +102,4 @@ public:
         return insertAll(xs, merge(ts1.rev(), ts2));
     }
 };
+#endif

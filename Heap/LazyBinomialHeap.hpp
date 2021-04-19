@@ -1,3 +1,5 @@
+#ifndef LAZYBINOMIALHEAP
+#define LAZYBINOMIALHEAP
 #include <iostream>
 #include <concepts>
 #include <variant>
@@ -9,7 +11,7 @@
 #include "../List/List.hpp"
 
 template <Ordered Elem>
-class Heap {
+class LazyBinomialHeap {
 private:
     class Tree {
     public:
@@ -38,26 +40,26 @@ private:
     Tree head() const {
         return force().head();
     }
-    Heap tail() const {
+    LazyBinomialHeap tail() const {
         return make_thunk([this_heap=*this](){ return this_heap.tail();});
     }
-    friend Heap cons(Tree t, Heap h) {
+    friend LazyBinomialHeap cons(Tree t, LazyBinomialHeap h) {
         return make_thunk([t,h]() { return cons(t, h.force());});
     }
     ImList<Tree> force() const {
         return (*m_heap)();
     }
     template <typename F>
-    static Heap make_thunk(F&& lam) {
-        return Heap(make_lazy_val(std::forward<F>(lam)));
+    static LazyBinomialHeap make_thunk(F&& lam) {
+        return LazyBinomialHeap(make_lazy_val(std::forward<F>(lam)));
     }
 public:
-    Heap() {
+    LazyBinomialHeap() {
         m_heap = std::make_shared<FunctionPtr<ImList<Tree>()>>(
                 make_lazy_val([](){return ImList<Tree>();})
                 );
     }
-    Heap(FunctionPtr<ImList<Tree>()> it) 
+    LazyBinomialHeap(FunctionPtr<ImList<Tree>()> it) 
         : m_heap(std::make_shared<FunctionPtr<ImList<Tree>()>>(it)) { }
     friend ImList<Tree> insTree(Tree t, ImList<Tree> ts) { // always t.getrank() <= t_min.getrank()
         if (ts.isEmpty())
@@ -69,10 +71,10 @@ public:
         else
             return insTree(link(t, t_min), ts.tail());
     }
-    Heap insert(Elem x) {
+    LazyBinomialHeap insert(Elem x) {
         return make_thunk([this_heap=*this, x](){return insTree({0, x, {}}, this_heap.force());});
     }
-    friend Heap merge(Heap h1, Heap h2) { // like adding two numbers
+    friend LazyBinomialHeap merge(LazyBinomialHeap h1, LazyBinomialHeap h2) { // like adding two numbers
         if (h1.isEmpty())
             return h2;
         if (h2.isEmpty())
@@ -87,7 +89,7 @@ public:
         else
             return make_thunk([head1,head2,tail1,tail2](){return insTree(link(head1, head2), merge(tail1, tail2).force());});
     }
-    std::pair<Tree, Heap> removeMinTree() {
+    std::pair<Tree, LazyBinomialHeap> removeMinTree() {
         if (tail().isEmpty())
             return {head(), {}};
         else {
@@ -112,7 +114,7 @@ public:
         }
         return e;
     }
-    Heap deleteMin() {
+    LazyBinomialHeap deleteMin() {
         auto [t, ts] = removeMinTree();
         return merge(make_thunk([t=t](){return t.children.rev();}), ts);
     }
@@ -128,25 +130,4 @@ public:
         }
     }
 };
-
-
-int main() {
-    Heap<int> hp;
-    hp = hp.insert(3).insert(4).insert(8);
-    auto hp2 = hp.insert(10).insert(-100);
-    hp.print();
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
-    hp2.print();
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
-    hp2 = hp2.deleteMin();
-    hp2.print();
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
-    auto hp3 = merge(hp, hp2);
-    hp3.print();
-}
+#endif

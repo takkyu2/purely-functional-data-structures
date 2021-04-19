@@ -1,3 +1,5 @@
+#ifndef REDBLACKTREEWITHDEL
+#define REDBLACKTREEWITHDEL
 #include <iostream>
 #include <concepts>
 #include <variant>
@@ -493,3 +495,4 @@ int main() {
     bst.print_bfs();
 }
 
+#endif

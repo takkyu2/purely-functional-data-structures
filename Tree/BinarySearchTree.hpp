@@ -1,3 +1,5 @@
+#ifndef BINARYSEARCHTREE
+#define BINARYSEARCHTREE
 #include <iostream>
 #include <concepts>
 #include <variant>
@@ -171,3 +173,4 @@ public:
 };
 
 
+#endif

@@ -1,3 +1,5 @@
+#ifndef SKEWBINARYRANDOMACCESSLIST
+#define SKEWBINARYRANDOMACCESSLIST
 #include "../List/List.hpp"
 #include <variant>
 
@@ -96,3 +98,4 @@ public:
         else return SkewBinaryRandomAccessList(m_list.tail()).update(i-w,y).m_list.cons({w,t});
     }
 };
+#endif

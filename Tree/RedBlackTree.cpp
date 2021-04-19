@@ -1,4 +1,5 @@
 #include "RedBlackTree.hpp"
+#include <iostream>
 
 int main() {
     RBTree<int> bst {};

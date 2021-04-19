@@ -1,3 +1,5 @@
+#ifndef BINARYRANDOMACCESSLIST
+#define BINARYRANDOMACCESSLIST
 #include <memory>
 #include <iostream>
 #include <variant>
@@ -147,3 +149,4 @@ public:
         }
     }
 };
+#endif

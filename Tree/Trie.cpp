@@ -1,4 +1,5 @@
 #include "Trie.hpp"
+#include <iostream>
 
 int main() {
     ImList<char> lis;

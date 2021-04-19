@@ -1,3 +1,5 @@
+#ifndef BINOMIALHEAP
+#define BINOMIALHEAP
 #include <iostream>
 #include <concepts>
 #include <variant>
@@ -10,7 +12,7 @@
 using namespace std::placeholders;
 
 template <Ordered Elem>
-class Heap {
+class BinomialHeap {
 private:
     class Tree {
     public:
@@ -39,16 +41,16 @@ private:
     Tree head() const {
         return m_heap.head();
     }
-    Heap tail() const {
+    BinomialHeap tail() const {
         return m_heap.tail();
     }
-    friend Heap cons(Tree t, Heap h) {
+    friend BinomialHeap cons(Tree t, BinomialHeap h) {
         return cons(t, h.m_heap);
     }
 public:
-    Heap() = default;
-    Heap(ImList<Tree> it) : m_heap(it) { }
-    Heap insTree(Tree t) const { // always t.getrank() <= t_min.getrank()
+    BinomialHeap() = default;
+    BinomialHeap(ImList<Tree> it) : m_heap(it) { }
+    BinomialHeap insTree(Tree t) const { // always t.getrank() <= t_min.getrank()
         if (isEmpty())
             return cons(t, *this);
 
@@ -58,10 +60,10 @@ public:
         else
             return tail().insTree(link(t, t_min));
     }
-    Heap insert(Elem x) {
+    BinomialHeap insert(Elem x) {
         return insTree({0, x, {}});
     }
-    friend Heap merge(Heap h1, Heap h2) {
+    friend BinomialHeap merge(BinomialHeap h1, BinomialHeap h2) {
         if (h1.isEmpty())
             return h2;
         if (h2.isEmpty())
@@ -76,7 +78,7 @@ public:
         else
             return merge(tail1, tail2).insTree(link(head1, head2));
     }
-    std::pair<Tree, Heap> removeMinTree() {
+    std::pair<Tree, BinomialHeap> removeMinTree() {
         if (tail().isEmpty())
             return {head(), {}};
         else {
@@ -101,7 +103,7 @@ public:
         }
         return e;
     }
-    Heap deleteMin() {
+    BinomialHeap deleteMin() {
         auto [t, ts] = removeMinTree();
         return merge(t.children.rev(), ts);
     }
@@ -118,13 +120,4 @@ public:
     }
 };
 
-
-int main() {
-    Heap<int> hp;
-    hp = hp.insert(3).insert(4).insert(8);
-    auto hp2 = hp.insert(10).insert(-100);
-    std::cout << hp2.findMin() << std::endl;
-    std::cout << hp2.findMin_direct() << std::endl;
-    hp2 = hp2.deleteMin();
-    hp2.print();
-}
+#endif

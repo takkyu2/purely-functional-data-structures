@@ -1,3 +1,5 @@
+#ifndef REDBLACKTREE
+#define REDBLACKTREE
 #include <iostream>
 #include <concepts>
 #include <variant>
@@ -351,3 +353,4 @@ RBTree<Elem> FromOrdList(ImList<Elem> head) {
     depth--;
     return FromOrdList_helper(head, sz, depth);
 }
+#endif

@@ -1,3 +1,5 @@
+#ifndef HOODMELVILLEREALTIMEQUEUE
+#define HOODMELVILLEREALTIMEQUEUE
 #include "List.hpp"
 #include "../utils/utils.hpp"
 #include "../utils/TypeErasure.hpp"
@@ -161,3 +163,4 @@ public:
         }
     }
 };
+#endif

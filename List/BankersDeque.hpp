@@ -1,3 +1,5 @@
+#ifndef BANKERSDEQUE
+#define BANKERSDEQUE
 #include "Stream.hpp"
 #include <iostream>
 
@@ -90,3 +92,4 @@ public:
         }
     }
 };
+#endif

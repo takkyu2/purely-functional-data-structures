@@ -1,5 +1,5 @@
-#ifndef IMLIST_CLASS
-#define IMLIST_CLASS
+#ifndef LIST
+#define LIST
 
 #include <string>
 #include <memory>

@@ -1,3 +1,5 @@
+#ifndef BOTTOMUPMERGESORT
+#define BOTTOMUPMERGESORT
 #include <iostream>
 #include <concepts>
 #include <variant>
@@ -57,3 +59,4 @@ private:
     std::shared_ptr<suspll> mglist;
 };
 
+#endif

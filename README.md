@@ -18,7 +18,7 @@ we can introduce the auxiliary cutoff for the number of the recursions with cons
 * [Binary Search Tree](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Tree/BinarySearchTree.hpp)
 
 ### Chapter 3
-* [Leftiest Heap](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Heap/LeftistHeap.hpp)
+* [Leftst Heap](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Heap/LeftistHeap.hpp)
 * [Weight Biased Leftist Heap](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Heap/WeightBiasedLeftistHeap.hpp)
 * [Binomial Heap](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Heap/BinomialHeap.hpp)
 * [Explicit Minimum Binomial Heap](https://github.com/takkyu2/Immutable-Data-Structures/blob/master/Heap/ExplicitMinBinomialHeap.hpp)
